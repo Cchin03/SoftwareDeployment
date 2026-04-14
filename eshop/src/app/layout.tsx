@@ -4,7 +4,21 @@ import './globals.css' // ← add this!
 
 export const metadata: Metadata = { title: 'ShopFlow' }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "shop.io — Everything you need, delivered.",
+  description: "Browse thousands of products across electronics, fashion, home, beauty, sports and books.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
       <head>
