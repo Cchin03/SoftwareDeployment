@@ -89,7 +89,7 @@ export default function Home() {
           <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-500 font-medium">
             <Link href="/" className="text-zinc-900 font-semibold">Home</Link>
             {categories.slice(0, 4).map(c => (
-              <Link key={c.id} href={`/mnt/category/${c.id}`} className="hover:text-zinc-900 transition-colors">{c.name}</Link>
+              <Link key={c.id} href={`/mnt/user-data/category/${c.id}`} className="hover:text-zinc-900 transition-colors">{c.name}</Link>
             ))}
           </nav>
           <div className="flex items-center gap-3">

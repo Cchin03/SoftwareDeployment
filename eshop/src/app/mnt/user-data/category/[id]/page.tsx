@@ -160,13 +160,13 @@ export default function CategoryPage() {
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-500 font-medium">
             {Object.entries(categoryData).slice(0, 5).map(([key, val]) => (
-              <Link key={key} href={`/category/${key}`} className={`hover:text-zinc-900 transition-colors ${key === id ? "text-zinc-900 font-semibold" : ""}`}>
+              <Link key={key} href={`/mnt/user-data/category/${key}`} className={`hover:text-zinc-900 transition-colors ${key === id ? "text-zinc-900 font-semibold" : ""}`}>
                 {val.name}
               </Link>
             ))}
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/cart" className="relative p-2 rounded-full hover:bg-zinc-100 transition-colors">
+            <Link href="/mnt/user-data/cart" className="relative p-2 rounded-full hover:bg-zinc-100 transition-colors">
               <svg className="w-5 h-5 text-zinc-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
@@ -174,7 +174,7 @@ export default function CategoryPage() {
                 <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-indigo-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">{cart.length}</span>
               )}
             </Link>
-            <Link href="/login" className="text-sm font-medium text-zinc-700 hover:text-zinc-900 hidden sm:block">Sign in</Link>
+            <Link href="/mnt/user-data/login/" className="text-sm font-medium text-zinc-700 hover:text-zinc-900 hidden sm:block">Sign in</Link>
           </div>
         </div>
       </header>
@@ -293,7 +293,7 @@ export default function CategoryPage() {
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
           <div className="bg-zinc-900 text-white px-6 py-3 rounded-2xl shadow-xl flex items-center gap-4 text-sm font-medium">
             <span>{cart.length} item{cart.length > 1 ? "s" : ""} in cart</span>
-            <Link href="/cart" className="bg-white text-zinc-900 px-4 py-1.5 rounded-xl font-semibold hover:bg-zinc-100 transition-colors text-xs">
+            <Link href="/mnt/user-data/cart" className="bg-white text-zinc-900 px-4 py-1.5 rounded-xl font-semibold hover:bg-zinc-100 transition-colors text-xs">
               View Cart →
             </Link>
           </div>
