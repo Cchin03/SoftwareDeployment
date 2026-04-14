@@ -145,7 +145,7 @@ export default function Home() {
           {categories.map((cat) => (
             <Link
               key={cat.id}
-              href={`/category/${cat.id}`}
+              href={`/mnt/user-data/category/${cat.id}`}
               className={`group relative rounded-2xl border p-6 ${cat.color} hover:shadow-md transition-all duration-200 hover:-translate-y-0.5`}
             >
               <div className="flex items-start justify-between mb-4">
