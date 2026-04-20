@@ -1,6 +1,8 @@
-'use client'
-import { useState, useEffect, useCallback } from 'react'
-import { createClient } from '@/lib/supabase/client'
+// src/app/mnt/user-data/dashboard/page.tsx
+export const dynamic = 'force-dynamic';
+
+import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
 
 /* ── Types ── */
 type StockStatus = 'In Stock' | 'Low Stock' | 'Out of Stock'
