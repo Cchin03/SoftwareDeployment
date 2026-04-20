@@ -1,15 +1,23 @@
 @import "tailwindcss";
 
+/* Content paths */
+@source "../**/*.{ts,tsx}";
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
-
-@theme inline {
+html, body {
+  height: 100%;
+  width: 100%;
+}
+@theme{
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --width-105: 420px;
+
 }
 
 @media (prefers-color-scheme: dark) {
