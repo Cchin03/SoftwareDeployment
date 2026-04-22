@@ -1,8 +1,7 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next'
-import './globals.css' // ← add this!
-
-export const metadata: Metadata = { title: 'ShopFlow' }
+import { Geist_Mono } from 'next/font/google'
+import './globals.css' 
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",

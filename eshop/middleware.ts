@@ -19,13 +19,11 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Not logged in → redirect to login
-  if (!user) {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
-
-  // Trying to access admin routes → check role
+  // ── Admin routes → must be logged in AND be admin
   if (request.nextUrl.pathname.startsWith('/admin')) {
+    if (!user) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
@@ -37,9 +35,23 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // ── Protected user routes → must be logged in (not guest)
+  if (request.nextUrl.pathname.startsWith('/checkout') ||
+      request.nextUrl.pathname.startsWith('/orders') ||
+      request.nextUrl.pathname.startsWith('/cart')) {
+    if (!user || user.is_anonymous) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+  }
+
   return response
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/admin/:path*'],
+  matcher: [
+    '/admin/:path*',    // ← admin only
+    '/checkout/:path*', // ← logged in only
+    '/orders/:path*',   // ← logged in only
+    '/cart/:path*',     // ← logged in only
+  ],
 }
