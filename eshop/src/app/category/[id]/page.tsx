@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -195,7 +196,7 @@ export default function CategoryPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {filteredProducts.map((product) => {
+            {filteredProducts.map((product, index) => {
               const inCart = cart.includes(product.id);
               const rating = product.rating ?? 0;
               const reviews = product.reviews ?? 0;
@@ -210,8 +211,19 @@ export default function CategoryPage() {
                     href={`/product/${category.id}/${product.id}`}
                     className="group flex flex-1 flex-col"
                   >
-                    <div className="relative flex items-center justify-center bg-zinc-50 py-8 text-6xl">
-                      <span aria-hidden="true">{product.emoji ?? "\u{1F6CD}"}</span>
+                    <div className="relative flex h-52 items-center justify-center overflow-hidden bg-zinc-50 p-6 text-6xl">
+                      {product.image ? (
+                        <Image
+                          src={product.image}
+                          alt={product.name}
+                          width={320}
+                          height={320}
+                          priority={index < 4}
+                          className="h-full w-full object-contain"
+                        />
+                      ) : (
+                        <span aria-hidden="true">{product.emoji ?? "\u{1F6CD}"}</span>
+                      )}
                       {product.tag && (
                         <span
                           className={`absolute top-3 left-3 rounded-full px-2 py-0.5 text-[10px] font-bold ${

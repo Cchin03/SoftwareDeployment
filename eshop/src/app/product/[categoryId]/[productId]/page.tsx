@@ -61,10 +61,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
             shop<span className="text-indigo-500">.</span>io
           </Link>
           <div className="flex items-center gap-3">
-            <Link href={`/category/${category.id}`} className="text-sm font-medium text-zinc-600 hover:text-zinc-900">
+            <Link
+              href={`/category/${category.id}`}
+              className="text-sm font-medium text-zinc-600 hover:text-zinc-900"
+            >
               Back to {category.name}
             </Link>
-            <Link href="/cart" className="rounded-full border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100">
+            <Link
+              href="/cart"
+              className="rounded-full border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100"
+            >
               Cart
             </Link>
           </div>
@@ -77,7 +83,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
             Home
           </Link>
           <span>/</span>
-          <Link href={`/category/${category.id}`} className="transition-colors hover:text-zinc-600">
+          <Link
+            href={`/category/${category.id}`}
+            className="transition-colors hover:text-zinc-600"
+          >
             {category.name}
           </Link>
           <span>/</span>
@@ -86,14 +95,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
           <section className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
-            <div className={`${category.color} flex min-h-[320px] items-center justify-center border-b border-zinc-200 p-8`}>
+            <div
+              className={`${category.color} flex min-h-[360px] items-center justify-center border-b border-zinc-200 p-8 sm:min-h-[440px] sm:p-10`}
+            >
               {product.image ? (
                 <Image
                   src={product.image}
                   alt={product.name}
-                  width={480}
-                  height={480}
-                  className="max-h-72 w-auto object-contain"
+                  width={720}
+                  height={720}
+                  priority
+                  className="h-[260px] w-full max-w-[420px] object-contain sm:h-[360px]"
                 />
               ) : (
                 <span className="text-[8rem]" aria-hidden="true">
