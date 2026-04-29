@@ -1,5 +1,6 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next'
+import { Geist_Mono } from 'next/font/google'
 import './globals.css' // ← add this!
 
 export const metadata: Metadata = { title: 'ShopFlow' }
@@ -8,11 +9,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-export const metadata: Metadata = {
-  title: "shop.io — Everything you need, delivered.",
-  description: "Browse thousands of products across electronics, fashion, home, beauty, sports and books.",
-};
 
 export default function RootLayout({
   children,
