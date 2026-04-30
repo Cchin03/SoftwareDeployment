@@ -96,7 +96,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
           <section className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
             <div
-              className={`${category.color} flex min-h-[360px] items-center justify-center border-b border-zinc-200 p-8 sm:min-h-[440px] sm:p-10`}
+              className={`${category.color} flex min-h-90 items-center justify-center border-b border-zinc-200 p-8 sm:min-h-110 sm:p-10`}
             >
               {product.image ? (
                 <Image
@@ -105,7 +105,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   width={720}
                   height={720}
                   priority
-                  className="h-[260px] w-full max-w-[420px] object-contain sm:h-[360px]"
+                  className="h-65 w-full max-w-105 object-contain sm:h-90"
                 />
               ) : (
                 <span className="text-[8rem]" aria-hidden="true">
