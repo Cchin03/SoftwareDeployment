@@ -1,3 +1,11 @@
+import { generatedProductVariantImages } from "@/lib/generated-product-variants";
+
+export type ProductImageVariant = {
+  colour?: string;
+  pattern?: string;
+  image: string;
+};
+
 export type Product = {
   id: string;
   name: string;
@@ -12,6 +20,7 @@ export type Product = {
   reviews?: number;
   emoji?: string;
   image?: string;
+  imageVariants?: ProductImageVariant[];
   tag?: string;
 };
 
@@ -36,7 +45,7 @@ export const productCategories: Record<string, Category> = {
     products: [
       {
         id: "macbook-pro-16",
-        image: "/products/electronics/macbook-pro-16-v2.jpg",
+        image: "/products/electronics/macbook%20pro%2016%20black.png",
         name: 'MacBook Pro 16"',
         brand: "Apple",
         price: "$2,499",
@@ -45,6 +54,16 @@ export const productCategories: Record<string, Category> = {
         sizes: ['16"'],
         colours: ["Space Black", "Silver"],
         patterns: ["Solid"],
+        imageVariants: [
+          {
+            colour: "Space Black",
+            image: "/products/electronics/macbook%20pro%2016%20black.png",
+          },
+          {
+            colour: "Silver",
+            image: "/products/electronics/macbook%20pro%2016%20silver.png",
+          },
+        ],
         rating: 5,
         reviews: 1284,
         emoji: "\u{1F4BB}",
@@ -866,6 +885,68 @@ export function getProductById(categoryId: string, productId: string) {
   return productCategories[categoryId]?.products.find(
     (product) => product.id === productId,
   );
+}
+
+function slugifyVariantOption(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function getGeneratedProductImageForColour(product: Product, selectedColour?: string) {
+  if (!selectedColour) {
+    return null;
+  }
+
+  const colourSlug = slugifyVariantOption(selectedColour);
+  return generatedProductVariantImages[product.id]?.[colourSlug] ?? null;
+}
+
+export function getProductImageForSelection({
+  product,
+  selectedColour,
+  selectedPattern,
+}: {
+  product: Product;
+  selectedColour?: string;
+  selectedPattern?: string;
+}) {
+  const variants = product.imageVariants ?? [];
+
+  const exactMatch = variants.find(
+    (variant) =>
+      (!selectedColour || variant.colour === selectedColour) &&
+      (!selectedPattern || variant.pattern === selectedPattern),
+  );
+  if (exactMatch) {
+    return exactMatch.image;
+  }
+
+  const colourOnlyMatch = variants.find(
+    (variant) => selectedColour && variant.colour === selectedColour && !variant.pattern,
+  );
+  if (colourOnlyMatch) {
+    return colourOnlyMatch.image;
+  }
+
+  const patternOnlyMatch = variants.find(
+    (variant) => selectedPattern && variant.pattern === selectedPattern && !variant.colour,
+  );
+  if (patternOnlyMatch) {
+    return patternOnlyMatch.image;
+  }
+
+  const generatedColourMatch = getGeneratedProductImageForColour(
+    product,
+    selectedColour,
+  );
+  if (generatedColourMatch) {
+    return generatedColourMatch;
+  }
+
+  return product.image;
 }
 
 export function parsePrice(price: string) {

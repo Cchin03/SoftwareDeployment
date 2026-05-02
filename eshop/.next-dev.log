@@ -1,0 +1,49 @@
+
+> eshop@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.163:3000
+- Environments: .env.local
+✓ Ready in 1739ms
+
+ GET / 307 in 847ms (next.js: 475ms, application-code: 372ms)
+ GET /dashboard 200 in 270ms (next.js: 56ms, application-code: 214ms)
+ GET / 307 in 51ms (next.js: 5ms, application-code: 46ms)
+ GET /dashboard 200 in 40ms (next.js: 4ms, application-code: 36ms)
+ GET /category/electronics 200 in 1227ms (next.js: 1203ms, application-code: 24ms)
+ GET /product/electronics/macbook-pro-16 200 in 2.1s (next.js: 1323ms, application-code: 815ms)
+ GET /product/electronics/macbook-pro-16 200 in 788ms (next.js: 758ms, application-code: 30ms)
+ GET /product/electronics/sony-wh-1000xm5 200 in 870ms (next.js: 840ms, application-code: 30ms)
+ GET /product/electronics/iphone-16-pro 200 in 836ms (next.js: 810ms, application-code: 25ms)
+✓ Compiled in 384ms
+ GET /product/electronics/iphone-16-pro 200 in 1224ms (next.js: 1025ms, application-code: 199ms)
+ GET /product/electronics/iphone-16-pro 200 in 343ms (next.js: 8ms, application-code: 334ms)
+ GET /product/electronics/iphone-16-pro 200 in 1100ms (next.js: 13ms, application-code: 1087ms)
+ GET /product/electronics/iphone-16-pro 200 in 1101ms (next.js: 67ms, application-code: 1035ms)
+ GET /product/electronics/iphone-16-pro 200 in 1101ms (next.js: 113ms, application-code: 987ms)
+ GET /product/electronics/iphone-16-pro 200 in 1102ms (next.js: 165ms, application-code: 936ms)
+ GET /product/electronics/iphone-16-pro 200 in 885ms (next.js: 808ms, application-code: 77ms)
+ GET /product/electronics/iphone-16-pro 200 in 987ms (next.js: 855ms, application-code: 131ms)
+ GET /category/electronics 200 in 832ms (next.js: 802ms, application-code: 30ms)
+ GET /product/electronics/apple-watch-ultra-2 200 in 873ms (next.js: 846ms, application-code: 27ms)
+ GET /product/electronics/dji-mini-4-pro 200 in 899ms (next.js: 869ms, application-code: 30ms)
+ GET /product/electronics/samsung-qled-55 200 in 798ms (next.js: 783ms, application-code: 16ms)
+✓ Compiled in 136ms
+ GET /category/electronics 200 in 1058ms (next.js: 976ms, application-code: 82ms)
+✓ Compiled in 132ms
+ GET /category/electronics 200 in 1081ms (next.js: 1000ms, application-code: 81ms)
+ GET /product/electronics/iphone-16-pro 200 in 894ms (next.js: 817ms, application-code: 77ms)
+ GET /product/electronics/iphone-16-pro 200 in 35ms (next.js: 5ms, application-code: 30ms)
+ GET /product/electronics/apple-watch-ultra-2 200 in 817ms (next.js: 791ms, application-code: 26ms)
+ GET /product/electronics/dji-mini-4-pro 200 in 745ms (next.js: 721ms, application-code: 24ms)
+ GET /dashboard 200 in 46ms (next.js: 25ms, application-code: 21ms)
+ GET /category/fashion 200 in 808ms (next.js: 786ms, application-code: 22ms)
+ GET /product/fashion/levis-501-jeans 200 in 844ms (next.js: 820ms, application-code: 24ms)
+ GET /product/fashion/nike-air-force-1 200 in 785ms (next.js: 755ms, application-code: 30ms)
+ GET /product/fashion/nike-air-force-1 200 in 875ms (next.js: 845ms, application-code: 30ms)
+ GET /product/fashion/oversized-trench 200 in 850ms (next.js: 831ms, application-code: 19ms)
+ GET /product/fashion/silk-slip-dress 200 in 960ms (next.js: 934ms, application-code: 26ms)
+ GET /product/fashion/aviator-sunglasses 200 in 864ms (next.js: 822ms, application-code: 42ms)
+ GET /product/fashion/gold-hoop-earrings 200 in 930ms (next.js: 901ms, application-code: 30ms)
