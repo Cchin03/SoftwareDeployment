@@ -51,15 +51,15 @@ export default function RegisterPage() {
         <div className="absolute -bottom-16 -left-16 w-56 h-56 rounded-full bg-white/5" />
 
         {/* Brand */}
-        <div className="flex items-center gap-3 z-10">
-          <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
+        <Link href="/dashboard" className="flex items-center gap-3 z-10 group">
+          <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 transition">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
               <polyline points="9 22 9 12 15 12 15 22" />
             </svg>
           </div>
-          <span className="text-white text-lg font-semibold tracking-tight">ShopFlow</span>
-        </div>
+          <span className="text-white text-lg font-semibold tracking-tight">Back to Shop</span>
+        </Link>
 
         {/* Body text */}
         <div className="z-10">
