@@ -96,6 +96,7 @@ export function ProductDetailView({
   const [selectedSize, setSelectedSize] = useState(product.sizes[0] ?? "");
   const [selectedColour, setSelectedColour] = useState(product.colours[0] ?? "");
   const [selectedPattern, setSelectedPattern] = useState(product.patterns[0] ?? "");
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
 
   const activeImage = useMemo(
     () =>
@@ -201,6 +202,20 @@ export function ProductDetailView({
           </p>
         </div>
 
+        {product.sizePage ? (
+          <button
+            type="button"
+            onClick={() => setIsSizeGuideOpen(true)}
+            className="mt-6 inline-flex items-center rounded-full border border-zinc-200 bg-white px-5 py-3 text-sm font-semibold text-zinc-800 transition-colors hover:border-zinc-400 hover:bg-zinc-50"
+          >
+            View Size Guide
+          </button>
+        ) : (
+          <p className="mt-6 text-sm text-zinc-500">
+            Size guide is not available for this product.
+          </p>
+        )}
+
         <button
           type="button"
           className="mt-6 inline-flex items-center rounded-full bg-zinc-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-zinc-700"
@@ -209,6 +224,46 @@ export function ProductDetailView({
         </button>
         {/* TODO: Hand off selected product options to cart flow. */}
       </section>
+
+      {product.sizePage && isSizeGuideOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-zinc-950/60 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="size-guide-title"
+          onClick={() => setIsSizeGuideOpen(false)}
+        >
+          <div
+            className="relative max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-zinc-200 px-5 py-4 sm:px-6">
+              <h2 id="size-guide-title" className="text-lg font-bold text-zinc-900">
+                Size Guide
+              </h2>
+              <button
+                type="button"
+                onClick={() => setIsSizeGuideOpen(false)}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
+                aria-label="Close size guide"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex max-h-[calc(90vh-73px)] items-center justify-center overflow-auto bg-zinc-50 p-4 sm:p-6">
+              <Image
+                src={product.sizePage}
+                alt={`${product.name} size guide`}
+                width={1200}
+                height={900}
+                className="h-auto max-h-[calc(90vh-121px)] w-auto max-w-full object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

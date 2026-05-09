@@ -1,3 +1,4 @@
+import { generatedProductPatternImages } from "@/lib/generated-product-patterns";
 import { generatedProductVariantImages } from "@/lib/generated-product-variants";
 
 export type ProductImageVariant = {
@@ -20,6 +21,7 @@ export type Product = {
   reviews?: number;
   emoji?: string;
   image?: string;
+  sizePage?: string;
   imageVariants?: ProductImageVariant[];
   tag?: string;
 };
@@ -46,6 +48,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "macbook-pro-16",
         image: "/products/electronics/macbook%20pro%2016%20black.png",
+        sizePage: "/products/electronics/sizePage/macbook%20pro%2016-size-page.png",
         name: 'MacBook Pro 16"',
         brand: "Apple",
         price: "$2,499",
@@ -72,6 +75,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "sony-wh-1000xm5",
         image: "/products/electronics/sony-wh-1000xm5-v2.jpg",
+        sizePage: "/products/electronics/sizePage/sony-wh-1000xm5-size-page.png",
         name: "Sony WH-1000XM5",
         brand: "Sony",
         price: "$279",
@@ -88,6 +92,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "iphone-16-pro",
         image: "/products/electronics/iphone-16-pro-v2.jpg",
+        sizePage: "/products/electronics/sizePage/iphone-16-pro-size-page.png",
         name: "iPhone 16 Pro",
         brand: "Apple",
         price: "$1,099",
@@ -104,6 +109,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "ipad-pro-m4",
         image: "/products/electronics/ipad-pro-m4-v2.jpg",
+        sizePage: "/products/electronics/sizePage/ipad-pro-m4-v2-size-page.png",
         name: "iPad Pro M4",
         brand: "Apple",
         price: "$999",
@@ -119,6 +125,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "samsung-qled-55",
         image: "/products/electronics/samsung-qled-55-v2.jpg",
+        sizePage: "/products/electronics/sizePage/samsung-qled-55-v2-size-page.png",
         name: 'Samsung QLED 55"',
         brand: "Samsung",
         price: "$799",
@@ -134,6 +141,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "apple-watch-ultra-2",
         image: "/products/electronics/apple-watch-ultra-2-v2.jpg",
+        sizePage: "/products/electronics/sizePage/apple-watch-size-page.png",
         name: "Apple Watch Ultra 2",
         brand: "Apple",
         price: "$799",
@@ -150,6 +158,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "bose-quietcomfort-45",
         image: "/products/electronics/bose-quietcomfort-45-v2.jpg",
+        sizePage: "/products/electronics/sizePage/bose-quietcomfort-45-size-page.png",
         name: "Bose QuietComfort 45",
         brand: "Bose",
         price: "$229",
@@ -166,6 +175,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "dji-mini-4-pro",
         image: "/products/electronics/dji-mini-4-pro-v2.jpg",
+        sizePage: "/products/electronics/sizePage/dji-mini-4-pro-size-page.png",
         name: "DJI Mini 4 Pro",
         brand: "DJI",
         price: "$759",
@@ -191,6 +201,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "levis-501-jeans",
         image: "/products/fashion/levis-501-jeans-v2.jpg",
+        sizePage: "/products/fashion/sizePage/levis-501-jeans-size-page.png",
         name: "Levi's 501 Jeans",
         brand: "Levi's",
         price: "$59",
@@ -207,6 +218,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "nike-air-force-1",
         image: "/products/fashion/nike-air-force-1-v2.jpg",
+        sizePage: "/products/fashion/sizePage/nike-air-force-1-size-page.png",
         name: "Nike Air Force 1",
         brand: "Nike",
         price: "$110",
@@ -223,6 +235,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "oversized-trench",
         image: "/products/fashion/oversized-trench-v2.jpg",
+        sizePage: "/products/fashion/sizePage/oversized-trench-size-page.png",
         name: "Oversized Trench",
         brand: "Aureline",
         price: "$149",
@@ -239,6 +252,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "silk-slip-dress",
         image: "/products/fashion/silk-slip-dress-v2.jpg",
+        sizePage: "/products/fashion/sizePage/silk-slip-dress-size-page.png",
         name: "Silk Slip Dress",
         brand: "Maison Vale",
         price: "$89",
@@ -254,6 +268,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "canvas-tote-bag",
         image: "/products/fashion/canvas-tote-bag-v2.jpg",
+        sizePage: "/products/fashion/sizePage/canvas-tote-bag-size-page.png",
         name: "Canvas Tote Bag",
         brand: "North Harbor",
         price: "$35",
@@ -270,6 +285,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "merino-wool-sweater",
         image: "/products/fashion/merino-wool-sweater-v2.jpg",
+        sizePage: "/products/fashion/sizePage/merino-wool-sweater-size-page.png",
         name: "Merino Wool Sweater",
         brand: "Hearth & Thread",
         price: "$120",
@@ -285,6 +301,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "aviator-sunglasses",
         image: "/products/fashion/aviator-sunglasses-v2.jpg",
+        sizePage: "/products/fashion/sizePage/aviator-sunglasses-v2-size-page.png",
         name: "Aviator Sunglasses",
         brand: "Solstice",
         price: "$75",
@@ -300,6 +317,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "gold-hoop-earrings",
         image: "/products/fashion/gold-hoop-earrings-v2.jpg",
+        sizePage: "/products/fashion/sizePage/gold-hoop-earrings-size-page.png",
         name: "Gold Hoop Earrings",
         brand: "Lune Studio",
         price: "$45",
@@ -326,6 +344,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "linen-sofa-3-seat",
         image: "/products/home/linen-sofa-3-seat-v2.jpg",
+        sizePage: "/products/home/sizePage/linen-sofa-3-seat-size-page.png",
         name: "Linen Sofa 3-Seat",
         brand: "Foundry Home",
         price: "$899",
@@ -342,6 +361,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "dyson-v15-vacuum",
         image: "/products/home/dyson-v15-vacuum-v2.jpg",
+        sizePage: "/products/home/sizePage/dyson-v15-vacuum-size-page.png",
         name: "Dyson V15 Vacuum",
         brand: "Dyson",
         price: "$549",
@@ -358,6 +378,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "coffee-maker-pro",
         image: "/products/home/coffee-maker-pro-v2.jpg",
+        sizePage: "/products/home/sizePage/coffee-maker-pro-size-page.png",
         name: "Coffee Maker Pro",
         brand: "Brewline",
         price: "$129",
@@ -373,6 +394,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "pendant-light-set",
         image: "/products/home/pendant-light-set-v2.jpg",
+        sizePage: "/products/home/sizePage/pendant-light-set-size-page.png",
         name: "Pendant Light Set",
         brand: "Halo House",
         price: "$199",
@@ -389,6 +411,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "cast-iron-dutch-oven",
         image: "/products/home/cast-iron-dutch-oven-v2.jpg",
+        sizePage: "/products/home/sizePage/cast-iron-dutch-oven-size-page.png",
         name: "Cast Iron Dutch Oven",
         brand: "Maison Cook",
         price: "$89",
@@ -405,6 +428,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "bamboo-bookshelf",
         image: "/products/home/bamboo-bookshelf-v2.jpg",
+        sizePage: "/products/home/sizePage/bamboo-bookshelf-size-page.png",
         name: "Bamboo Bookshelf",
         brand: "Kin Grove",
         price: "$249",
@@ -420,6 +444,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "smart-thermostat",
         image: "/products/home/smart-thermostat-v2.jpg",
+        sizePage: "/products/home/sizePage/smart-thermostat-size-page.png",
         name: "Smart Thermostat",
         brand: "Nest",
         price: "$179",
@@ -436,6 +461,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "scented-candle-set",
         image: "/products/home/scented-candle-set-v2.jpg",
+        sizePage: "/products/home/sizePage/scented-candle-set-size-page.png",
         name: "Scented Candle Set",
         brand: "Quiet Corner",
         price: "$49",
@@ -462,6 +488,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "cosrx-ha-serum",
         image: "/products/beauty/cosrx-ha-serum-v2.jpg",
+        sizePage: "/products/beauty/sizePage/cosrx-ha-serum-size-page.png",
         name: "COSRX HA Serum",
         brand: "COSRX",
         price: "$23",
@@ -478,6 +505,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "vitamin-c-moisturizer",
         image: "/products/beauty/vitamin-c-moisturizer-v2.jpg",
+        sizePage: "/products/beauty/sizePage/vitamin-c-moisturizer-size-page.png",
         name: "Vitamin C Moisturizer",
         brand: "Glow Theory",
         price: "$42",
@@ -494,6 +522,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "spf50-sunscreen",
         image: "/products/beauty/spf50-sunscreen-v2.jpg",
+        sizePage: "/products/beauty/sizePage/spf50-sunscreen-size-page.png",
         name: "SPF50 Sunscreen",
         brand: "Sunveil",
         price: "$18",
@@ -510,6 +539,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "rose-face-mist",
         image: "/products/beauty/rose-face-mist-v2.jpg",
+        sizePage: "/products/beauty/sizePage/rose-face-mist-size-page.png",
         name: "Rose Face Mist",
         brand: "Botanica",
         price: "$29",
@@ -525,6 +555,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "retinol-night-cream",
         image: "/products/beauty/retinol-night-cream-v2.jpg",
+        sizePage: "/products/beauty/sizePage/retinol-night-cream-size-page.png",
         name: "Retinol Night Cream",
         brand: "Dermaline",
         price: "$55",
@@ -541,6 +572,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "chanel-no-5-50ml",
         image: "/products/beauty/chanel-no-5-50ml-v2.jpg",
+        sizePage: "/products/beauty/sizePage/chanel-no-5-sizepage.png",
         name: "Chanel No. 5 (50ml)",
         brand: "Chanel",
         price: "$89",
@@ -557,6 +589,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "mascara-extreme",
         image: "/products/beauty/mascara-extreme-v2.jpg",
+        sizePage: "/products/beauty/sizePage/mascara-extreme-size-page.png",
         name: "Mascara Extreme",
         brand: "Velour",
         price: "$22",
@@ -572,6 +605,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "lip-gloss-set",
         image: "/products/beauty/lip-gloss-set-v2.jpg",
+        sizePage: "/products/beauty/sizePage/lip-gloss-set-size-page.png",
         name: "Lip Gloss Set",
         brand: "Tint Lab",
         price: "$35",
@@ -598,6 +632,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "yoga-mat-pro",
         image: "/products/sports/yoga-mat-pro-v2.jpg",
+        sizePage: "/products/sports/sizePage/yoga-mat-pro-size-page.png",
         name: "Yoga Mat Pro",
         brand: "FlowForm",
         price: "$65",
@@ -614,6 +649,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "adjustable-dumbbells",
         image: "/products/sports/adjustable-dumbbells-v2.jpg",
+        sizePage: "/products/sports/sizePage/adjustable-dumbbells-size-page.png",
         name: "Adjustable Dumbbells",
         brand: "Iron Core",
         price: "$189",
@@ -630,6 +666,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "running-shoes-v2",
         image: "/products/sports/running-shoes-v2-asset.jpg",
+        sizePage: "/products/sports/sizePage/running-shoes-v2-size-page.png",
         name: "Running Shoes V2",
         brand: "Stridelab",
         price: "$130",
@@ -646,6 +683,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "cycling-helmet",
         image: "/products/sports/cycling-helmet-v2.jpg",
+        sizePage: "/products/sports/sizePage/cycling-helmet-size-page.png",
         name: "Cycling Helmet",
         brand: "AeroTrail",
         price: "$79",
@@ -661,6 +699,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "resistance-bands-set",
         image: "/products/sports/resistance-bands-set-v2.jpg",
+        sizePage: "/products/sports/sizePage/resistance-bands-set-size-page.png",
         name: "Resistance Bands Set",
         brand: "Coreline",
         price: "$35",
@@ -677,6 +716,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "swimming-goggles",
         image: "/products/sports/swimming-goggles-v2.jpg",
+        sizePage: "/products/sports/sizePage/swimming-goggles-size-page.png",
         name: "Swimming Goggles",
         brand: "Blue Current",
         price: "$29",
@@ -692,6 +732,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "protein-powder-2kg",
         image: "/products/sports/protein-powder-2kg-v2.jpg",
+        sizePage: "/products/sports/sizePage/protein-powder-2kg-size-page.png",
         name: "Protein Powder 2kg",
         brand: "Peak Fuel",
         price: "$55",
@@ -708,6 +749,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "jump-rope-pro",
         image: "/products/sports/jump-rope-pro-v2.jpg",
+        sizePage: "/products/sports/sizePage/jump-rope-pro-size-page.png",
         name: "Jump Rope Pro",
         brand: "TempoFit",
         price: "$22",
@@ -733,6 +775,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "atomic-habits",
         image: "/products/books/atomic-habits-v2.jpg",
+        sizePage: "/products/books/sizePage/atomic-habits-size-page.png",
         name: "Atomic Habits",
         brand: "Avery",
         price: "$17",
@@ -749,6 +792,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "the-midnight-library",
         image: "/products/books/the-midnight-library-v2.jpg",
+        sizePage: "/products/books/sizePage/the-midnight-library-size-page.png",
         name: "The Midnight Library",
         brand: "Canongate",
         price: "$14",
@@ -765,6 +809,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "taylor-swift-vinyl",
         image: "/products/books/taylor-swift-vinyl-v2.jpg",
+        sizePage: "/products/books/sizePage/taylor-swift-vinyl-size-page.png",
         name: "Taylor Swift Vinyl",
         brand: "Republic Records",
         price: "$29",
@@ -781,6 +826,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "catan-board-game",
         image: "/products/books/catan-board-game-v2.jpg",
+        sizePage: "/products/books/sizePage/catan-board-game-size-page.png",
         name: "Catan Board Game",
         brand: "Catan Studio",
         price: "$44",
@@ -797,6 +843,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "dune-boxed-set",
         image: "/products/books/dune-boxed-set-v2.jpg",
+        sizePage: "/products/books/sizePage/dune-boxed-set-size-page.png",
         name: "Dune (Boxed Set)",
         brand: "Ace",
         price: "$39",
@@ -812,6 +859,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "art-of-war",
         image: "/products/books/art-of-war-v2.jpg",
+        sizePage: "/products/books/sizePage/art-of-war-size-page.png",
         name: "Art of War",
         brand: "Penguin Classics",
         price: "$9",
@@ -827,6 +875,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "kindle-paperwhite",
         image: "/products/books/kindle-paperwhite-v2.jpg",
+        sizePage: "/products/books/sizePage/kindle-paperwhite-size-page.png",
         name: "Kindle Paperwhite",
         brand: "Amazon",
         price: "$139",
@@ -843,6 +892,7 @@ export const productCategories: Record<string, Category> = {
       {
         id: "jigsaw-puzzle-1000pc",
         image: "/products/books/jigsaw-puzzle-1000pc-v2.jpg",
+        sizePage: "/products/books/sizePage/jigsaw-puzzle-1000pc-size-page.png",
         name: "Jigsaw Puzzle 1000pc",
         brand: "Piece & Pine",
         price: "$18",
@@ -904,6 +954,43 @@ function getGeneratedProductImageForColour(product: Product, selectedColour?: st
   return generatedProductVariantImages[product.id]?.[colourSlug] ?? null;
 }
 
+function getProductImageForColour(product: Product, selectedColour?: string) {
+  if (!selectedColour) {
+    return null;
+  }
+
+  const colourOnlyMatch = product.imageVariants?.find(
+    (variant) => variant.colour === selectedColour && !variant.pattern,
+  );
+  if (colourOnlyMatch) {
+    return colourOnlyMatch.image;
+  }
+
+  return getGeneratedProductImageForColour(product, selectedColour);
+}
+
+function getGeneratedProductImageForPattern({
+  product,
+  selectedColour,
+  selectedPattern,
+}: {
+  product: Product;
+  selectedColour?: string;
+  selectedPattern?: string;
+}) {
+  if (
+    !selectedColour ||
+    !selectedPattern ||
+    slugifyVariantOption(selectedPattern) === "solid"
+  ) {
+    return null;
+  }
+
+  const colourSlug = slugifyVariantOption(selectedColour);
+  const patternSlug = slugifyVariantOption(selectedPattern);
+  return generatedProductPatternImages[product.id]?.[`${colourSlug}-${patternSlug}`] ?? null;
+}
+
 export function getProductImageForSelection({
   product,
   selectedColour,
@@ -913,37 +1000,18 @@ export function getProductImageForSelection({
   selectedColour?: string;
   selectedPattern?: string;
 }) {
-  const variants = product.imageVariants ?? [];
-
-  const exactMatch = variants.find(
-    (variant) =>
-      (!selectedColour || variant.colour === selectedColour) &&
-      (!selectedPattern || variant.pattern === selectedPattern),
-  );
-  if (exactMatch) {
-    return exactMatch.image;
-  }
-
-  const colourOnlyMatch = variants.find(
-    (variant) => selectedColour && variant.colour === selectedColour && !variant.pattern,
-  );
-  if (colourOnlyMatch) {
-    return colourOnlyMatch.image;
-  }
-
-  const patternOnlyMatch = variants.find(
-    (variant) => selectedPattern && variant.pattern === selectedPattern && !variant.colour,
-  );
-  if (patternOnlyMatch) {
-    return patternOnlyMatch.image;
-  }
-
-  const generatedColourMatch = getGeneratedProductImageForColour(
+  const patternMatch = getGeneratedProductImageForPattern({
     product,
     selectedColour,
-  );
-  if (generatedColourMatch) {
-    return generatedColourMatch;
+    selectedPattern,
+  });
+  if (patternMatch) {
+    return patternMatch;
+  }
+
+  const colourMatch = getProductImageForColour(product, selectedColour);
+  if (colourMatch) {
+    return colourMatch;
   }
 
   return product.image;
