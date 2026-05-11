@@ -7,7 +7,7 @@ import {
   getProductImageForSelection,
   type Category,
   type Product,
-} from "@/lib/product-data";
+} from "@/lib/productData";
 
 type ProductDetailViewProps = {
   category: Category;
@@ -42,11 +42,10 @@ function SelectorGroup({
               key={option}
               type="button"
               onClick={() => onChange(option)}
-              className={`rounded-full border px-4 py-2 text-sm transition-colors ${
-                isSelected
+              className={`rounded-full border px-4 py-2 text-sm transition-colors ${isSelected
                   ? "border-zinc-900 bg-zinc-900 text-white"
                   : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400"
-              }`}
+                }`}
             >
               {option}
             </button>
@@ -112,7 +111,7 @@ export function ProductDetailView({
     <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
       <section className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
         <div
-          className={`${category.color} flex min-h-[360px] items-center justify-center border-b border-zinc-200 p-8 sm:min-h-[440px] sm:p-10`}
+          className={`${category.color} flex min-h-90 items-center justify-center border-b border-zinc-200 p-8 sm:min-h-110 sm:p-10`}
         >
           {activeImage ? (
             <Image
@@ -122,7 +121,7 @@ export function ProductDetailView({
               width={720}
               height={720}
               priority
-              className="h-[260px] w-full max-w-[420px] object-contain sm:h-[360px]"
+              className="h-65 w-full max-w-105 object-contain sm:h-90"
             />
           ) : (
             <span className="text-[8rem]" aria-hidden="true">
@@ -227,7 +226,7 @@ export function ProductDetailView({
 
       {product.sizePage && isSizeGuideOpen && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-zinc-950/60 p-4"
+          className="fixed inset-0 z-100 flex items-center justify-center bg-zinc-950/60 p-4"
           role="dialog"
           aria-modal="true"
           aria-labelledby="size-guide-title"

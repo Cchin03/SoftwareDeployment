@@ -1,5 +1,5 @@
-import { generatedProductPatternImages } from "@/lib/generated-product-patterns";
-import { generatedProductVariantImages } from "@/lib/generated-product-variants";
+import { generatedProductPatternImages } from "@/lib/generatedProductPatterns";
+import { generatedProductVariantImages } from "@/lib/generatedProductVariants";
 
 export type ProductImageVariant = {
   colour?: string;

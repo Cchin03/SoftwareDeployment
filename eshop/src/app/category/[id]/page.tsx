@@ -13,7 +13,7 @@ import {
   tagColors,
   type Product,
   type SortOption,
-} from "@/lib/product-data";
+} from "@/lib/productData";
 
 function sortProducts(products: Product[], sort: SortOption) {
   const nextProducts = [...products];
@@ -88,9 +88,8 @@ export default function CategoryPage() {
                 <Link
                   key={key}
                   href={`/category/${key}`}
-                  className={`transition-colors hover:text-zinc-900 ${
-                    key === id ? "font-semibold text-zinc-900" : ""
-                  }`}
+                  className={`transition-colors hover:text-zinc-900 ${key === id ? "font-semibold text-zinc-900" : ""
+                    }`}
                 >
                   {value.name}
                 </Link>
@@ -176,11 +175,10 @@ export default function CategoryPage() {
                   key={option}
                   type="button"
                   onClick={() => setSort(option)}
-                  className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                    sort === option
+                  className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${sort === option
                       ? "bg-zinc-900 text-white"
                       : "border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50"
-                  }`}
+                    }`}
                 >
                   {option}
                 </button>
@@ -226,9 +224,8 @@ export default function CategoryPage() {
                       )}
                       {product.tag && (
                         <span
-                          className={`absolute top-3 left-3 rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                            tagColors[product.tag] ?? "bg-zinc-100 text-zinc-600"
-                          }`}
+                          className={`absolute top-3 left-3 rounded-full px-2 py-0.5 text-[10px] font-bold ${tagColors[product.tag] ?? "bg-zinc-100 text-zinc-600"
+                            }`}
                         >
                           {product.tag}
                         </span>
@@ -248,9 +245,8 @@ export default function CategoryPage() {
                             {Array.from({ length: 5 }).map((_, index) => (
                               <svg
                                 key={index}
-                                className={`h-3 w-3 ${
-                                  index < rating ? "text-amber-400" : "text-zinc-200"
-                                }`}
+                                className={`h-3 w-3 ${index < rating ? "text-amber-400" : "text-zinc-200"
+                                  }`}
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
                               >
@@ -278,11 +274,10 @@ export default function CategoryPage() {
                             : [...previous, product.id],
                         )
                       }
-                      className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-                        inCart
+                      className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${inCart
                           ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
                           : "bg-zinc-900 text-white hover:bg-zinc-700"
-                      }`}
+                        }`}
                     >
                       {inCart ? "Added" : "Add to cart"}
                     </button>

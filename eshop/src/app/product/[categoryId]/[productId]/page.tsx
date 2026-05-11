@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ProductDetailView } from "@/components/product-detail-view";
-import { getCategoryById, getProductById } from "@/lib/product-data";
+import { ProductDetailView } from "@/components/productDetailView";
+import { getCategoryById, getProductById } from "@/lib/productData";
 
 type ProductPageProps = {
   params: Promise<{
