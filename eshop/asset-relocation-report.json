@@ -1,0 +1,1235 @@
+{
+  "movedIntoProducts": [
+    {
+      "from": "/generated-products/phase1/aviator-sunglasses-v2__black.png",
+      "to": "/products/fashion/variants/aviator-sunglasses__black.png",
+      "sourceType": "phase1",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/aviator-sunglasses-v2__gold.png",
+      "to": "/products/fashion/variants/aviator-sunglasses__gold.png",
+      "sourceType": "phase1",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/bose-quietcomfort-45-v2__black.png",
+      "to": "/products/electronics/variants/bose-quietcomfort-45__black.png",
+      "sourceType": "phase1",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/ipad-pro-m4-v2__silver.png",
+      "to": "/products/electronics/variants/ipad-pro-m4__silver.png",
+      "sourceType": "phase1",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/iphone-16-pro-v2__black-titanium.png",
+      "to": "/products/electronics/variants/iphone-16-pro__black-titanium.png",
+      "sourceType": "phase1",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/iphone-16-pro-v2__natural-titanium.png",
+      "to": "/products/electronics/variants/iphone-16-pro__natural-titanium.png",
+      "sourceType": "phase1",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/kindle-paperwhite-v2__black.png",
+      "to": "/products/books/variants/kindle-paperwhite__black.png",
+      "sourceType": "phase1",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/sony-wh-1000xm5-v2__black.png",
+      "to": "/products/electronics/variants/sony-wh-1000xm5__black.png",
+      "sourceType": "phase1",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/sony-wh-1000xm5-v2__silver.png",
+      "to": "/products/electronics/variants/sony-wh-1000xm5__silver.png",
+      "sourceType": "phase1",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/adjustable-dumbbells__black.png",
+      "to": "/products/sports/variants/adjustable-dumbbells__black.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/adjustable-dumbbells__red.png",
+      "to": "/products/sports/variants/adjustable-dumbbells__red.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/apple-watch-ultra-2__olive.png",
+      "to": "/products/electronics/variants/apple-watch-ultra-2__olive.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/art-of-war__black.png",
+      "to": "/products/books/variants/art-of-war__black.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/art-of-war__red.png",
+      "to": "/products/books/variants/art-of-war__red.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/atomic-habits__gold.png",
+      "to": "/products/books/variants/atomic-habits__gold.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/atomic-habits__white.png",
+      "to": "/products/books/variants/atomic-habits__white.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/aviator-sunglasses__silver.png",
+      "to": "/products/fashion/variants/aviator-sunglasses__silver.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/bamboo-bookshelf__natural.png",
+      "to": "/products/home/variants/bamboo-bookshelf__natural.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/bamboo-bookshelf__walnut.png",
+      "to": "/products/home/variants/bamboo-bookshelf__walnut.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/canvas-tote-bag__natural.png",
+      "to": "/products/fashion/variants/canvas-tote-bag__natural.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/canvas-tote-bag__navy.png",
+      "to": "/products/fashion/variants/canvas-tote-bag__navy.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/canvas-tote-bag__olive.png",
+      "to": "/products/fashion/variants/canvas-tote-bag__olive.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/cast-iron-dutch-oven__cherry.png",
+      "to": "/products/home/variants/cast-iron-dutch-oven__cherry.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/cast-iron-dutch-oven__cream.png",
+      "to": "/products/home/variants/cast-iron-dutch-oven__cream.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/cast-iron-dutch-oven__navy.png",
+      "to": "/products/home/variants/cast-iron-dutch-oven__navy.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/coffee-maker-pro__cream.png",
+      "to": "/products/home/variants/coffee-maker-pro__cream.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/coffee-maker-pro__matte-black.png",
+      "to": "/products/home/variants/coffee-maker-pro__matte-black.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/cycling-helmet__cyan.png",
+      "to": "/products/sports/variants/cycling-helmet__cyan.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/cycling-helmet__matte-black.png",
+      "to": "/products/sports/variants/cycling-helmet__matte-black.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/cycling-helmet__white.png",
+      "to": "/products/sports/variants/cycling-helmet__white.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/dune-boxed-set__black.png",
+      "to": "/products/books/variants/dune-boxed-set__black.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/dune-boxed-set__sand.png",
+      "to": "/products/books/variants/dune-boxed-set__sand.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/dyson-v15-vacuum__nickel.png",
+      "to": "/products/home/variants/dyson-v15-vacuum__nickel.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/dyson-v15-vacuum__yellow.png",
+      "to": "/products/home/variants/dyson-v15-vacuum__yellow.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/gold-hoop-earrings__gold.png",
+      "to": "/products/fashion/variants/gold-hoop-earrings__gold.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/gold-hoop-earrings__silver.png",
+      "to": "/products/fashion/variants/gold-hoop-earrings__silver.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/iphone-16-pro__desert-titanium.png",
+      "to": "/products/electronics/variants/iphone-16-pro__desert-titanium.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/jump-rope-pro__black.png",
+      "to": "/products/sports/variants/jump-rope-pro__black.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/jump-rope-pro__blue.png",
+      "to": "/products/sports/variants/jump-rope-pro__blue.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/jump-rope-pro__red.png",
+      "to": "/products/sports/variants/jump-rope-pro__red.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/kindle-paperwhite__agave.png",
+      "to": "/products/books/variants/kindle-paperwhite__agave.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/kindle-paperwhite__denim.png",
+      "to": "/products/books/variants/kindle-paperwhite__denim.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/levis-501-jeans__black-wash.png",
+      "to": "/products/fashion/variants/levis-501-jeans__black-wash.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/levis-501-jeans__indigo.png",
+      "to": "/products/fashion/variants/levis-501-jeans__indigo.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/levis-501-jeans__stone.png",
+      "to": "/products/fashion/variants/levis-501-jeans__stone.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/linen-sofa-3-seat__fog.png",
+      "to": "/products/home/variants/linen-sofa-3-seat__fog.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/linen-sofa-3-seat__olive.png",
+      "to": "/products/home/variants/linen-sofa-3-seat__olive.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/linen-sofa-3-seat__sand.png",
+      "to": "/products/home/variants/linen-sofa-3-seat__sand.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/lip-gloss-set__berry.png",
+      "to": "/products/beauty/variants/lip-gloss-set__berry.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/lip-gloss-set__peach.png",
+      "to": "/products/beauty/variants/lip-gloss-set__peach.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/lip-gloss-set__rose.png",
+      "to": "/products/beauty/variants/lip-gloss-set__rose.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/mascara-extreme__black.png",
+      "to": "/products/beauty/variants/mascara-extreme__black.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/mascara-extreme__brown.png",
+      "to": "/products/beauty/variants/mascara-extreme__brown.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/merino-wool-sweater__forest.png",
+      "to": "/products/fashion/variants/merino-wool-sweater__forest.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/merino-wool-sweater__navy.png",
+      "to": "/products/fashion/variants/merino-wool-sweater__navy.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/merino-wool-sweater__oatmeal.png",
+      "to": "/products/fashion/variants/merino-wool-sweater__oatmeal.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/nike-air-force-1__black.png",
+      "to": "/products/fashion/variants/nike-air-force-1__black.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/nike-air-force-1__white-green.png",
+      "to": "/products/fashion/variants/nike-air-force-1__white-green.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/nike-air-force-1__white.png",
+      "to": "/products/fashion/variants/nike-air-force-1__white.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/oversized-trench__black.png",
+      "to": "/products/fashion/variants/oversized-trench__black.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/oversized-trench__camel.png",
+      "to": "/products/fashion/variants/oversized-trench__camel.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/oversized-trench__stone.png",
+      "to": "/products/fashion/variants/oversized-trench__stone.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/pendant-light-set__black.png",
+      "to": "/products/home/variants/pendant-light-set__black.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/pendant-light-set__brass.png",
+      "to": "/products/home/variants/pendant-light-set__brass.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/protein-powder-2kg__chocolate.png",
+      "to": "/products/sports/variants/protein-powder-2kg__chocolate.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/protein-powder-2kg__vanilla.png",
+      "to": "/products/sports/variants/protein-powder-2kg__vanilla.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/resistance-bands-set__black.png",
+      "to": "/products/sports/variants/resistance-bands-set__black.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/resistance-bands-set__blue.png",
+      "to": "/products/sports/variants/resistance-bands-set__blue.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/resistance-bands-set__yellow.png",
+      "to": "/products/sports/variants/resistance-bands-set__yellow.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/running-shoes-v2__black-lime.png",
+      "to": "/products/sports/variants/running-shoes-v2__black-lime.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/running-shoes-v2__coral.png",
+      "to": "/products/sports/variants/running-shoes-v2__coral.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/running-shoes-v2__white-blue.png",
+      "to": "/products/sports/variants/running-shoes-v2__white-blue.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/scented-candle-set__amber.png",
+      "to": "/products/home/variants/scented-candle-set__amber.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/scented-candle-set__ivory.png",
+      "to": "/products/home/variants/scented-candle-set__ivory.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/silk-slip-dress__black.png",
+      "to": "/products/fashion/variants/silk-slip-dress__black.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/silk-slip-dress__champagne.png",
+      "to": "/products/fashion/variants/silk-slip-dress__champagne.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/silk-slip-dress__rose.png",
+      "to": "/products/fashion/variants/silk-slip-dress__rose.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/smart-thermostat__charcoal.png",
+      "to": "/products/home/variants/smart-thermostat__charcoal.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/smart-thermostat__sand.png",
+      "to": "/products/home/variants/smart-thermostat__sand.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/smart-thermostat__snow.png",
+      "to": "/products/home/variants/smart-thermostat__snow.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/swimming-goggles__blue.png",
+      "to": "/products/sports/variants/swimming-goggles__blue.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/swimming-goggles__clear.png",
+      "to": "/products/sports/variants/swimming-goggles__clear.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/swimming-goggles__smoke.png",
+      "to": "/products/sports/variants/swimming-goggles__smoke.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/taylor-swift-vinyl__black.png",
+      "to": "/products/books/variants/taylor-swift-vinyl__black.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/taylor-swift-vinyl__marbled-blue.png",
+      "to": "/products/books/variants/taylor-swift-vinyl__marbled-blue.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/the-midnight-library__blue.png",
+      "to": "/products/books/variants/the-midnight-library__blue.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/the-midnight-library__navy.png",
+      "to": "/products/books/variants/the-midnight-library__navy.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/yoga-mat-pro__charcoal.png",
+      "to": "/products/sports/variants/yoga-mat-pro__charcoal.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/yoga-mat-pro__lilac.png",
+      "to": "/products/sports/variants/yoga-mat-pro__lilac.png",
+      "sourceType": "v4",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/v4/yoga-mat-pro__sage.png",
+      "to": "/products/sports/variants/yoga-mat-pro__sage.png",
+      "sourceType": "v4",
+      "moved": true
+    }
+  ],
+  "movedIntoBackup": [
+    {
+      "from": "/file.svg",
+      "to": "/备用/file.svg",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/apple-watch-ultra-2-v2__midnight.png",
+      "to": "/备用/generated-products/phase1/apple-watch-ultra-2-v2__midnight.png",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/apple-watch-ultra-2-v2__silver.png",
+      "to": "/备用/generated-products/phase1/apple-watch-ultra-2-v2__silver.png",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/apple-watch-ultra-2-v2__starlight.png",
+      "to": "/备用/generated-products/phase1/apple-watch-ultra-2-v2__starlight.png",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/bose-quietcomfort-45-v2__silver.png",
+      "to": "/备用/generated-products/phase1/bose-quietcomfort-45-v2__silver.png",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/bose-quietcomfort-45-v2__white.png",
+      "to": "/备用/generated-products/phase1/bose-quietcomfort-45-v2__white.png",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/dji-mini-4-pro-v2__graphite.png",
+      "to": "/备用/generated-products/phase1/dji-mini-4-pro-v2__graphite.png",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/dji-mini-4-pro-v2__original-color.png",
+      "to": "/备用/generated-products/phase1/dji-mini-4-pro-v2__original-color.png",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/ipad-pro-m4-v2__space-gray.png",
+      "to": "/备用/generated-products/phase1/ipad-pro-m4-v2__space-gray.png",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/iphone-16-pro-v2__white-titanium.png",
+      "to": "/备用/generated-products/phase1/iphone-16-pro-v2__white-titanium.png",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/kindle-paperwhite-v2__white.png",
+      "to": "/备用/generated-products/phase1/kindle-paperwhite-v2__white.png",
+      "moved": true
+    },
+    {
+      "from": "/generated-products/phase1/sony-wh-1000xm5-v2__white.png",
+      "to": "/备用/generated-products/phase1/sony-wh-1000xm5-v2__white.png",
+      "moved": true
+    },
+    {
+      "from": "/globe.svg",
+      "to": "/备用/globe.svg",
+      "moved": true
+    },
+    {
+      "from": "/next.svg",
+      "to": "/备用/next.svg",
+      "moved": true
+    },
+    {
+      "from": "/products/electronics/macbook pro 16 black.png",
+      "to": "/备用/products/electronics/macbook pro 16 black.png",
+      "moved": true
+    },
+    {
+      "from": "/products/electronics/macbook pro 16 silver.png",
+      "to": "/备用/products/electronics/macbook pro 16 silver.png",
+      "moved": true
+    },
+    {
+      "from": "/products/electronics/macbook-pro-16-v2.jpg",
+      "to": "/备用/products/electronics/macbook-pro-16-v2.jpg",
+      "moved": true
+    },
+    {
+      "from": "/vercel.svg",
+      "to": "/备用/vercel.svg",
+      "moved": true
+    },
+    {
+      "from": "/window.svg",
+      "to": "/备用/window.svg",
+      "moved": true
+    }
+  ],
+  "keptReferencedImages": [
+    "/products/beauty/chanel-no-5-50ml-v2.jpg",
+    "/products/beauty/cosrx-ha-serum-v2.jpg",
+    "/products/beauty/lip-gloss-set-v2.jpg",
+    "/products/beauty/mascara-extreme-v2.jpg",
+    "/products/beauty/retinol-night-cream-v2.jpg",
+    "/products/beauty/rose-face-mist-v2.jpg",
+    "/products/beauty/spf50-sunscreen-v2.jpg",
+    "/products/beauty/vitamin-c-moisturizer-v2.jpg",
+    "/products/books/art-of-war-v2.jpg",
+    "/products/books/atomic-habits-v2.jpg",
+    "/products/books/catan-board-game-v2.jpg",
+    "/products/books/dune-boxed-set-v2.jpg",
+    "/products/books/jigsaw-puzzle-1000pc-v2.jpg",
+    "/products/books/kindle-paperwhite-v2.jpg",
+    "/products/books/taylor-swift-vinyl-v2.jpg",
+    "/products/books/the-midnight-library-v2.jpg",
+    "/products/electronics/apple-watch-ultra-2-v2.jpg",
+    "/products/electronics/bose-quietcomfort-45-v2.jpg",
+    "/products/electronics/dji-mini-4-pro-v2.jpg",
+    "/products/electronics/ipad-pro-m4-v2.jpg",
+    "/products/electronics/iphone-16-pro-v2.jpg",
+    "/products/electronics/macbook%20pro%2016%20black.png",
+    "/products/electronics/macbook%20pro%2016%20silver.png",
+    "/products/electronics/samsung-qled-55-v2.jpg",
+    "/products/electronics/sony-wh-1000xm5-v2.jpg",
+    "/products/fashion/aviator-sunglasses-v2.jpg",
+    "/products/fashion/canvas-tote-bag-v2.jpg",
+    "/products/fashion/gold-hoop-earrings-v2.jpg",
+    "/products/fashion/levis-501-jeans-v2.jpg",
+    "/products/fashion/merino-wool-sweater-v2.jpg",
+    "/products/fashion/nike-air-force-1-v2.jpg",
+    "/products/fashion/oversized-trench-v2.jpg",
+    "/products/fashion/silk-slip-dress-v2.jpg",
+    "/products/home/bamboo-bookshelf-v2.jpg",
+    "/products/home/cast-iron-dutch-oven-v2.jpg",
+    "/products/home/coffee-maker-pro-v2.jpg",
+    "/products/home/dyson-v15-vacuum-v2.jpg",
+    "/products/home/linen-sofa-3-seat-v2.jpg",
+    "/products/home/pendant-light-set-v2.jpg",
+    "/products/home/scented-candle-set-v2.jpg",
+    "/products/home/smart-thermostat-v2.jpg",
+    "/products/sports/adjustable-dumbbells-v2.jpg",
+    "/products/sports/cycling-helmet-v2.jpg",
+    "/products/sports/jump-rope-pro-v2.jpg",
+    "/products/sports/protein-powder-2kg-v2.jpg",
+    "/products/sports/resistance-bands-set-v2.jpg",
+    "/products/sports/running-shoes-v2-asset.jpg",
+    "/products/sports/swimming-goggles-v2.jpg",
+    "/products/sports/yoga-mat-pro-v2.jpg"
+  ],
+  "chosenVariants": [
+    {
+      "productId": "aviator-sunglasses",
+      "colourSlug": "black",
+      "path": "/products/fashion/variants/aviator-sunglasses__black.png",
+      "sourceType": "phase1"
+    },
+    {
+      "productId": "aviator-sunglasses",
+      "colourSlug": "gold",
+      "path": "/products/fashion/variants/aviator-sunglasses__gold.png",
+      "sourceType": "phase1"
+    },
+    {
+      "productId": "bose-quietcomfort-45",
+      "colourSlug": "black",
+      "path": "/products/electronics/variants/bose-quietcomfort-45__black.png",
+      "sourceType": "phase1"
+    },
+    {
+      "productId": "ipad-pro-m4",
+      "colourSlug": "silver",
+      "path": "/products/electronics/variants/ipad-pro-m4__silver.png",
+      "sourceType": "phase1"
+    },
+    {
+      "productId": "iphone-16-pro",
+      "colourSlug": "black-titanium",
+      "path": "/products/electronics/variants/iphone-16-pro__black-titanium.png",
+      "sourceType": "phase1"
+    },
+    {
+      "productId": "iphone-16-pro",
+      "colourSlug": "natural-titanium",
+      "path": "/products/electronics/variants/iphone-16-pro__natural-titanium.png",
+      "sourceType": "phase1"
+    },
+    {
+      "productId": "kindle-paperwhite",
+      "colourSlug": "black",
+      "path": "/products/books/variants/kindle-paperwhite__black.png",
+      "sourceType": "phase1"
+    },
+    {
+      "productId": "sony-wh-1000xm5",
+      "colourSlug": "black",
+      "path": "/products/electronics/variants/sony-wh-1000xm5__black.png",
+      "sourceType": "phase1"
+    },
+    {
+      "productId": "sony-wh-1000xm5",
+      "colourSlug": "silver",
+      "path": "/products/electronics/variants/sony-wh-1000xm5__silver.png",
+      "sourceType": "phase1"
+    },
+    {
+      "productId": "adjustable-dumbbells",
+      "colourSlug": "black",
+      "path": "/products/sports/variants/adjustable-dumbbells__black.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "adjustable-dumbbells",
+      "colourSlug": "red",
+      "path": "/products/sports/variants/adjustable-dumbbells__red.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "apple-watch-ultra-2",
+      "colourSlug": "olive",
+      "path": "/products/electronics/variants/apple-watch-ultra-2__olive.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "art-of-war",
+      "colourSlug": "black",
+      "path": "/products/books/variants/art-of-war__black.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "art-of-war",
+      "colourSlug": "red",
+      "path": "/products/books/variants/art-of-war__red.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "atomic-habits",
+      "colourSlug": "gold",
+      "path": "/products/books/variants/atomic-habits__gold.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "atomic-habits",
+      "colourSlug": "white",
+      "path": "/products/books/variants/atomic-habits__white.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "aviator-sunglasses",
+      "colourSlug": "silver",
+      "path": "/products/fashion/variants/aviator-sunglasses__silver.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "bamboo-bookshelf",
+      "colourSlug": "natural",
+      "path": "/products/home/variants/bamboo-bookshelf__natural.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "bamboo-bookshelf",
+      "colourSlug": "walnut",
+      "path": "/products/home/variants/bamboo-bookshelf__walnut.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "canvas-tote-bag",
+      "colourSlug": "natural",
+      "path": "/products/fashion/variants/canvas-tote-bag__natural.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "canvas-tote-bag",
+      "colourSlug": "navy",
+      "path": "/products/fashion/variants/canvas-tote-bag__navy.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "canvas-tote-bag",
+      "colourSlug": "olive",
+      "path": "/products/fashion/variants/canvas-tote-bag__olive.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "cast-iron-dutch-oven",
+      "colourSlug": "cherry",
+      "path": "/products/home/variants/cast-iron-dutch-oven__cherry.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "cast-iron-dutch-oven",
+      "colourSlug": "cream",
+      "path": "/products/home/variants/cast-iron-dutch-oven__cream.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "cast-iron-dutch-oven",
+      "colourSlug": "navy",
+      "path": "/products/home/variants/cast-iron-dutch-oven__navy.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "coffee-maker-pro",
+      "colourSlug": "cream",
+      "path": "/products/home/variants/coffee-maker-pro__cream.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "coffee-maker-pro",
+      "colourSlug": "matte-black",
+      "path": "/products/home/variants/coffee-maker-pro__matte-black.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "cycling-helmet",
+      "colourSlug": "cyan",
+      "path": "/products/sports/variants/cycling-helmet__cyan.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "cycling-helmet",
+      "colourSlug": "matte-black",
+      "path": "/products/sports/variants/cycling-helmet__matte-black.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "cycling-helmet",
+      "colourSlug": "white",
+      "path": "/products/sports/variants/cycling-helmet__white.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "dune-boxed-set",
+      "colourSlug": "black",
+      "path": "/products/books/variants/dune-boxed-set__black.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "dune-boxed-set",
+      "colourSlug": "sand",
+      "path": "/products/books/variants/dune-boxed-set__sand.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "dyson-v15-vacuum",
+      "colourSlug": "nickel",
+      "path": "/products/home/variants/dyson-v15-vacuum__nickel.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "dyson-v15-vacuum",
+      "colourSlug": "yellow",
+      "path": "/products/home/variants/dyson-v15-vacuum__yellow.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "gold-hoop-earrings",
+      "colourSlug": "gold",
+      "path": "/products/fashion/variants/gold-hoop-earrings__gold.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "gold-hoop-earrings",
+      "colourSlug": "silver",
+      "path": "/products/fashion/variants/gold-hoop-earrings__silver.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "iphone-16-pro",
+      "colourSlug": "desert-titanium",
+      "path": "/products/electronics/variants/iphone-16-pro__desert-titanium.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "jump-rope-pro",
+      "colourSlug": "black",
+      "path": "/products/sports/variants/jump-rope-pro__black.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "jump-rope-pro",
+      "colourSlug": "blue",
+      "path": "/products/sports/variants/jump-rope-pro__blue.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "jump-rope-pro",
+      "colourSlug": "red",
+      "path": "/products/sports/variants/jump-rope-pro__red.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "kindle-paperwhite",
+      "colourSlug": "agave",
+      "path": "/products/books/variants/kindle-paperwhite__agave.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "kindle-paperwhite",
+      "colourSlug": "denim",
+      "path": "/products/books/variants/kindle-paperwhite__denim.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "levis-501-jeans",
+      "colourSlug": "black-wash",
+      "path": "/products/fashion/variants/levis-501-jeans__black-wash.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "levis-501-jeans",
+      "colourSlug": "indigo",
+      "path": "/products/fashion/variants/levis-501-jeans__indigo.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "levis-501-jeans",
+      "colourSlug": "stone",
+      "path": "/products/fashion/variants/levis-501-jeans__stone.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "linen-sofa-3-seat",
+      "colourSlug": "fog",
+      "path": "/products/home/variants/linen-sofa-3-seat__fog.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "linen-sofa-3-seat",
+      "colourSlug": "olive",
+      "path": "/products/home/variants/linen-sofa-3-seat__olive.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "linen-sofa-3-seat",
+      "colourSlug": "sand",
+      "path": "/products/home/variants/linen-sofa-3-seat__sand.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "lip-gloss-set",
+      "colourSlug": "berry",
+      "path": "/products/beauty/variants/lip-gloss-set__berry.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "lip-gloss-set",
+      "colourSlug": "peach",
+      "path": "/products/beauty/variants/lip-gloss-set__peach.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "lip-gloss-set",
+      "colourSlug": "rose",
+      "path": "/products/beauty/variants/lip-gloss-set__rose.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "mascara-extreme",
+      "colourSlug": "black",
+      "path": "/products/beauty/variants/mascara-extreme__black.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "mascara-extreme",
+      "colourSlug": "brown",
+      "path": "/products/beauty/variants/mascara-extreme__brown.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "merino-wool-sweater",
+      "colourSlug": "forest",
+      "path": "/products/fashion/variants/merino-wool-sweater__forest.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "merino-wool-sweater",
+      "colourSlug": "navy",
+      "path": "/products/fashion/variants/merino-wool-sweater__navy.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "merino-wool-sweater",
+      "colourSlug": "oatmeal",
+      "path": "/products/fashion/variants/merino-wool-sweater__oatmeal.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "nike-air-force-1",
+      "colourSlug": "black",
+      "path": "/products/fashion/variants/nike-air-force-1__black.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "nike-air-force-1",
+      "colourSlug": "white-green",
+      "path": "/products/fashion/variants/nike-air-force-1__white-green.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "nike-air-force-1",
+      "colourSlug": "white",
+      "path": "/products/fashion/variants/nike-air-force-1__white.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "oversized-trench",
+      "colourSlug": "black",
+      "path": "/products/fashion/variants/oversized-trench__black.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "oversized-trench",
+      "colourSlug": "camel",
+      "path": "/products/fashion/variants/oversized-trench__camel.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "oversized-trench",
+      "colourSlug": "stone",
+      "path": "/products/fashion/variants/oversized-trench__stone.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "pendant-light-set",
+      "colourSlug": "black",
+      "path": "/products/home/variants/pendant-light-set__black.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "pendant-light-set",
+      "colourSlug": "brass",
+      "path": "/products/home/variants/pendant-light-set__brass.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "protein-powder-2kg",
+      "colourSlug": "chocolate",
+      "path": "/products/sports/variants/protein-powder-2kg__chocolate.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "protein-powder-2kg",
+      "colourSlug": "vanilla",
+      "path": "/products/sports/variants/protein-powder-2kg__vanilla.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "resistance-bands-set",
+      "colourSlug": "black",
+      "path": "/products/sports/variants/resistance-bands-set__black.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "resistance-bands-set",
+      "colourSlug": "blue",
+      "path": "/products/sports/variants/resistance-bands-set__blue.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "resistance-bands-set",
+      "colourSlug": "yellow",
+      "path": "/products/sports/variants/resistance-bands-set__yellow.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "running-shoes-v2",
+      "colourSlug": "black-lime",
+      "path": "/products/sports/variants/running-shoes-v2__black-lime.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "running-shoes-v2",
+      "colourSlug": "coral",
+      "path": "/products/sports/variants/running-shoes-v2__coral.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "running-shoes-v2",
+      "colourSlug": "white-blue",
+      "path": "/products/sports/variants/running-shoes-v2__white-blue.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "scented-candle-set",
+      "colourSlug": "amber",
+      "path": "/products/home/variants/scented-candle-set__amber.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "scented-candle-set",
+      "colourSlug": "ivory",
+      "path": "/products/home/variants/scented-candle-set__ivory.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "silk-slip-dress",
+      "colourSlug": "black",
+      "path": "/products/fashion/variants/silk-slip-dress__black.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "silk-slip-dress",
+      "colourSlug": "champagne",
+      "path": "/products/fashion/variants/silk-slip-dress__champagne.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "silk-slip-dress",
+      "colourSlug": "rose",
+      "path": "/products/fashion/variants/silk-slip-dress__rose.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "smart-thermostat",
+      "colourSlug": "charcoal",
+      "path": "/products/home/variants/smart-thermostat__charcoal.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "smart-thermostat",
+      "colourSlug": "sand",
+      "path": "/products/home/variants/smart-thermostat__sand.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "smart-thermostat",
+      "colourSlug": "snow",
+      "path": "/products/home/variants/smart-thermostat__snow.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "swimming-goggles",
+      "colourSlug": "blue",
+      "path": "/products/sports/variants/swimming-goggles__blue.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "swimming-goggles",
+      "colourSlug": "clear",
+      "path": "/products/sports/variants/swimming-goggles__clear.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "swimming-goggles",
+      "colourSlug": "smoke",
+      "path": "/products/sports/variants/swimming-goggles__smoke.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "taylor-swift-vinyl",
+      "colourSlug": "black",
+      "path": "/products/books/variants/taylor-swift-vinyl__black.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "taylor-swift-vinyl",
+      "colourSlug": "marbled-blue",
+      "path": "/products/books/variants/taylor-swift-vinyl__marbled-blue.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "the-midnight-library",
+      "colourSlug": "blue",
+      "path": "/products/books/variants/the-midnight-library__blue.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "the-midnight-library",
+      "colourSlug": "navy",
+      "path": "/products/books/variants/the-midnight-library__navy.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "yoga-mat-pro",
+      "colourSlug": "charcoal",
+      "path": "/products/sports/variants/yoga-mat-pro__charcoal.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "yoga-mat-pro",
+      "colourSlug": "lilac",
+      "path": "/products/sports/variants/yoga-mat-pro__lilac.png",
+      "sourceType": "v4"
+    },
+    {
+      "productId": "yoga-mat-pro",
+      "colourSlug": "sage",
+      "path": "/products/sports/variants/yoga-mat-pro__sage.png",
+      "sourceType": "v4"
+    }
+  ],
+  "leftoverVariantSources": []
+}

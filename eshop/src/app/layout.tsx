@@ -26,7 +26,11 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen w-full" style={{ margin: 0 }}>
+      <body
+        className="min-h-screen w-full"
+        style={{ margin: 0 }}
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>

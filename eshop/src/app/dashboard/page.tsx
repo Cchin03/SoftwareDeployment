@@ -43,8 +43,8 @@ const categories = [
 const deals = [
   { name: 'Sony WH-1000XM5', price: '$279', was: '$349', category: 'Electronics',   img: '🎧' },
   { name: "Levi's 501 Jeans",  price: '$59',  was: '$89',  category: 'Fashion',       img: '👖' },
-  { name: 'Dyson V15',         price: '$549', was: '$699', category: 'Home & Living', img: '🌀' },
-  { name: 'COSRX Serum',       price: '$23',  was: '$35',  category: 'Beauty',        img: '🧴' },
+  { name: 'Dyson V15', price: '$549', was: '$699', category: 'Home & Living', img: '🌀' },
+  { name: 'COSRX Serum', price: '$23',  was: '$35',  category: 'Beauty',        img: '🧴' },
 ]
 
 export default function ShopDashboard() {
