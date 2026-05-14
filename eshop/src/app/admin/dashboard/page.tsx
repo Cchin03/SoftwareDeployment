@@ -3,12 +3,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Sidebar from '@/components/sidebar'
 import ProductsTable from '@/components/productsTable'
+import type { AdminOrder, AdminOrderItem } from '@/lib/supabase/types'
 
-/* ── Types ── */
-type StockStatus = 'In Stock' | 'Low Stock' | 'Out of Stock'
-type OrderStatus = 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled'
-
-type Product = {
+type DashProduct = {
   id: string
   name: string
   brand: string | null
@@ -20,80 +17,132 @@ type Product = {
   stock: number
 }
 
-type Order = {
-  id: string
-  status: string
-  total: number
-  date: string
-  city: string | null
-  address: string | null
-  items: number
-  created_at: string
-}
-
-function stockStatus(stock: number): StockStatus {
-  if (stock > 10) return 'In Stock'
-  if (stock > 0)  return 'Low Stock'
-  return 'Out of Stock'
-}
-
-const stockBadge: Record<StockStatus, string> = {
-  'In Stock':     'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  'Low Stock':    'bg-amber-50 text-amber-700 ring-amber-200',
-  'Out of Stock': 'bg-red-50 text-red-600 ring-red-200',
-}
-const orderBadge: Record<string, string> = {
-  pending:    'bg-amber-50 text-amber-700 ring-amber-200',
-  processing: 'bg-blue-50 text-blue-700 ring-blue-200',
-  shipped:    'bg-cyan-50 text-cyan-700 ring-cyan-200',
-  delivered:  'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  cancelled:  'bg-red-50 text-red-600 ring-red-200',
-}
-
+// function for order status
 function getOrderBadge(status: string) {
-  return orderBadge[status?.toLowerCase()] ?? 'bg-slate-50 text-slate-600 ring-slate-200'
+  const map: Record<string, string> = {
+    pending: 'bg-amber-50 text-amber-700 ring-amber-200',
+    processing: 'bg-blue-50 text-blue-700 ring-blue-200',
+    shipped: 'bg-cyan-50 text-cyan-700 ring-cyan-200',
+    delivered: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+    cancelled: 'bg-red-50 text-red-600 ring-red-200',
+  }
+  return map[status?.toLowerCase()] ?? 'bg-slate-50 text-slate-600 ring-slate-200'
+}
+
+function buildWaUrl(o: AdminOrder, items: AdminOrderItem[]): string {
+  const itemLines = items.length
+    ? items
+        .map(i =>
+          `• ${i.product_name} (${i.size}, ${i.colour}) ×${i.quantity} — RM${(Number(i.price_at_purchase) * i.quantity).toFixed(2)}`
+        )
+        .join('\n')
+    : `${o.items} item(s)`
+
+  const paymentLabel =
+    o.payment_method === 'online_banking' ? 'Online Banking' : 'Cash on Delivery'
+
+  const status = o.status?.toLowerCase()
+
+  //Status-specific message blocks
+  let statusBlock = ''
+  if (status === 'cancelled') {
+    statusBlock =
+      `\n*ORDER CANCELLED*\n` +
+      `━━━━━━━━━━━━━━━━\n` +
+      `We're sorry to inform you that your order *${o.id}* has been *cancelled*.\n` +
+      `If you have any questions, please contact us. We apologise for the inconvenience. 🙏\n`
+  } else if (status === 'delivered') {
+    statusBlock =
+      `\n*ORDER DELIVERED*\n` +
+      `━━━━━━━━━━━━━━━━\n` +
+      `Great news! Your order has been *successfully delivered*. 🎉\n` +
+      `We hope you love your purchase. Thank you for shopping with us! 🛍️\n`
+  } else if (status === 'shipped') {
+    statusBlock =
+      `\n*ORDER SHIPPED*\n` +
+      `━━━━━━━━━━━━━━━━\n` +
+      `Your order is on its way! Estimated delivery within 2–5 working days. 📦\n`
+  } else if (status === 'processing') {
+    statusBlock =
+      `\n*ORDER PROCESSING*\n` +
+      `━━━━━━━━━━━━━━━━\n` +
+      `Your order is currently being prepared. We will notify you once it ships. 📦\n`
+  } else {
+    statusBlock =
+      `\n*ORDER PENDING*\n` +
+      `━━━━━━━━━━━━━━━━\n` +
+      `Your order has been received and is awaiting processing. Thank you for your patience! 🙏\n`
+  }
+
+  const msg = encodeURIComponent(
+    `*Order Receipt & Status Update*\n` +
+    `━━━━━━━━━━━━━━━━\n` +
+    `Order ID: *${o.id}*\n` +
+    `Date: ${o.date}\n` +
+    `Status: *${o.status}*\n\n` +
+    `*Customer Details*\n` +
+    `Recipient: ${o.customer ?? '—'}\n` +
+    `Sender: ${o.sender_name ?? '—'}\n` +
+    `Phone: ${o.phone ?? '—'}\n` +
+    `City: ${o.city ?? '—'}\n` +
+    `Address: ${o.address ?? '—'}\n\n` +
+    `*Items Ordered*\n` +
+    `${itemLines}\n\n` +
+    `Payment: ${paymentLabel}\n` +
+    `*Total: RM${o.total.toFixed(2)}*\n` +
+    statusBlock
+  )
+
+  const clean = (o.whatsapp ?? '').replace(/\D/g, '')
+  return `https://wa.me/${clean}?text=${msg}`
 }
 
 const SERVICES = [
-  { name: 'Web Server',          online: true,  status: 'Online' },
+  { name: 'Web Server', online: true,  status: 'Online' },
   { name: 'Database (Supabase)', online: true,  status: 'Online' },
-  { name: 'Payment Gateway',     online: true,  status: 'Online' },
-  { name: 'Email Service',       online: false, status: 'Slow'   },
-  { name: 'CDN / Storage',       online: true,  status: 'Online' },
+  { name: 'Payment Gateway', online: true,  status: 'Online' },
+  { name: 'Email Service', online: false, status: 'Slow'   },
+  { name: 'CDN / Storage', online: true,  status: 'Online' },
 ]
 
-/* ════════════════════════════════════════════
-   MAIN
-════════════════════════════════════════════ */
+// Admin Dashboard page
 export default function AdminDashboard() {
   const supabase = createClient()
 
-  const [products, setProducts]       = useState<Product[]>([])
-  const [orders, setOrders]           = useState<Order[]>([])
-  const [loading, setLoading]         = useState(true)
-  const [categories, setCategories]   = useState<string[]>([])
+  const [products, setProducts] = useState<DashProduct[]>([])
+  const [orders, setOrders] = useState<AdminOrder[]>([])
+  const [loading, setLoading] = useState(true)
+  const [categories, setCategories] = useState<string[]>([])
   const [orderFilter, setOrderFilter] = useState('All Orders')
-  const [toast, setToast]             = useState('')
-  const [metrics, setMetrics]         = useState({ cpu: 34, ram: 61, disk: 22, net: 48 })
+  const [toast, setToast] = useState('')
+  // temporary random metrics for demo purposes
+  const [metrics, setMetrics] = useState({ cpu: 34, ram: 61, disk: 22, net: 48 })
   const [lastChecked, setLastChecked] = useState('Just now')
-  const [userName, setUserName]       = useState('Admin')
-  const [userEmail, setUserEmail]     = useState('admin@shopkl.com')
+  const [userName, setUserName] = useState('Admin')
+  const [userEmail, setUserEmail] = useState('admin@shopkl.com')
 
   // Stats
   const [totalProductCount, setTotalProductCount] = useState(0)
-  const [totalOrderCount, setTotalOrderCount]     = useState(0)
-  const [totalRevenue, setTotalRevenue]           = useState(0)
-  const [totalUserCount, setTotalUserCount]       = useState(0)
+  const [totalOrderCount, setTotalOrderCount] = useState(0)
+  const [totalRevenue, setTotalRevenue] = useState(0)
+  const [totalUserCount, setTotalUserCount] = useState(0)
 
+  // Product modals
   const [showAddProduct, setShowAddProduct] = useState(false)
-  const [newProduct, setNewProduct]         = useState({ name: '', price: '', brand: '' })
-  const [saving, setSaving]                 = useState(false)
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
-  const [editingOrder, setEditingOrder]     = useState<Order | null>(null)
-  const [editOrderForm, setEditOrderForm]   = useState({ status: '', address: '', note: '' })
+  const [newProduct, setNewProduct] = useState({ name: '', price: '', brand: '' })
+  const [saving, setSaving] = useState(false)
+  const [editingProduct, setEditingProduct] = useState<DashProduct | null>(null)
+
+  // Order modals
+  const [editingOrder, setEditingOrder] = useState<AdminOrder | null>(null)
+  const [editOrderForm, setEditOrderForm] = useState({ status: '', address: '', note: '' })
+
+  // Order items cache: keyed by order id
+  const [orderItemsMap, setOrderItemsMap] = useState<Record<string, AdminOrderItem[]>>({})
 
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
 
+  // Fetch user info for header
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
@@ -105,7 +154,7 @@ export default function AdminDashboard() {
     getUser()
   }, [supabase])
 
-  /* ── Fetch Products ── */
+  // Fetch products with category and stock info
   const fetchProducts = useCallback(async () => {
     const { data } = await supabase
       .from('products')
@@ -122,56 +171,57 @@ export default function AdminDashboard() {
       `)
       .order('name')
 
-    const formatted: Product[] = (data ?? []).map((p: any) => ({
-      id:       p.id,
-      name:     p.name,
-      brand:    p.brand ?? null,
-      price:    parseFloat(p.price) || 0,
-      image:    p.image ?? null,
-      rating:   p.rating ?? null,
-      reviews:  p.reviews ?? null,
+    const formatted: DashProduct[] = (data ?? []).map((p: any) => ({
+      id: p.id,
+      name: p.name,
+      brand: p.brand ?? null,
+      price: parseFloat(p.price) || 0,
+      image: p.image ?? null,
+      rating: p.rating ?? null,
+      reviews: p.reviews ?? null,
       category: p.categories?.name ?? 'Uncategorized',
-      stock:    (p.product_variants ?? []).reduce((sum: number, v: any) => sum + (v.stock_quantity ?? 0), 0),
+      stock: (p.product_variants ?? []).reduce((sum: number, v: any) => sum + (v.stock_quantity ?? 0), 0),
     }))
 
     setProducts(formatted)
-
-    // Derive unique categories for filter chips
     const cats = [...new Set(formatted.map(p => p.category))].filter(Boolean)
     setCategories(cats)
-
     setTotalProductCount(formatted.length)
   }, [supabase])
 
-  /* ── Fetch Orders ── */
+  // Fetch Orders
   const fetchOrders = useCallback(async () => {
     const { data } = await supabase
       .from('orders')
-      .select('id, status, total, date, city, address, items, created_at')
+      .select('id, status, total, date, city, address, items, created_at, whatsapp, phone, customer, sender_name, payment_method')
       .order('created_at', { ascending: false })
 
-    const formatted: Order[] = (data ?? []).map((o: any) => ({
-      id:         o.id,
-      status:     o.status ?? 'Pending',
-      total:      parseFloat(o.total) || 0,
-      date:       o.date ?? '',
-      city:       o.city ?? null,
-      address:    o.address ?? null,
-      items:      o.items ?? 0,
+    const formatted: AdminOrder[] = (data ?? []).map((o: any) => ({
+      id: o.id,
+      status: o.status ?? 'Pending',
+      total: parseFloat(o.total) || 0,
+      date: o.date ?? '',
+      city: o.city ?? null,
+      address: o.address ?? null,
+      items: o.items ?? 0,
       created_at: o.created_at ?? '',
+      whatsapp: o.whatsapp ?? null,
+      phone: o.phone ?? null,
+      customer: o.customer ?? null,
+      sender_name: o.sender_name ?? null,
+      payment_method: o.payment_method ?? null,
     }))
 
     setOrders(formatted)
     setTotalOrderCount(formatted.length)
 
-    // Revenue from delivered orders
     const revenue = formatted
       .filter(o => o.status?.toLowerCase() === 'delivered')
       .reduce((sum, o) => sum + o.total, 0)
     setTotalRevenue(revenue)
   }, [supabase])
 
-  /* ── Fetch User Count ── */
+  // Fetch User Count
   const fetchUserCount = useCallback(async () => {
     const { count } = await supabase
       .from('profiles')
@@ -179,7 +229,17 @@ export default function AdminDashboard() {
     setTotalUserCount(count ?? 0)
   }, [supabase])
 
-  /* ── Init ── */
+  // Fetch Order Items (on demand, cached)
+  const fetchOrderItems = useCallback(async (orderId: string) => {
+    if (orderItemsMap[orderId]) return // already cached
+    const { data } = await supabase
+      .from('order_items')
+      .select('product_name, size, colour, quantity, price_at_purchase')
+      .eq('order_id', orderId)
+    setOrderItemsMap(prev => ({ ...prev, [orderId]: (data ?? []) as AdminOrderItem[] }))
+  }, [supabase, orderItemsMap])
+
+  // Initial load
   useEffect(() => {
     const init = async () => {
       setLoading(true)
@@ -189,40 +249,38 @@ export default function AdminDashboard() {
     init()
   }, [fetchProducts, fetchOrders, fetchUserCount])
 
-  /* ── Metrics ticker ── */
+  // Metrics ticker (Server monitoring, temporary)
   useEffect(() => {
     const id = setInterval(() => {
       setMetrics({
-        cpu:  Math.floor(30 + Math.random() * 25),
-        ram:  Math.floor(55 + Math.random() * 20),
+        cpu: Math.floor(30 + Math.random() * 25),
+        ram: Math.floor(55 + Math.random() * 20),
         disk: Math.floor(15 + Math.random() * 30),
-        net:  Math.floor(35 + Math.random() * 40),
+        net: Math.floor(35 + Math.random() * 40),
       })
       setLastChecked(new Date().toLocaleTimeString())
     }, 4000)
     return () => clearInterval(id)
   }, [])
 
-  const handleLogout = async () => { await supabase.auth.signOut(); window.location.href = '/login' }
-
-  /* ── Add Product (inserts into products only — no variant) ── */
+  // Product actions
   const addProduct = async () => {
     if (!newProduct.name || !newProduct.price) { alert('Please fill all required fields.'); return }
     setSaving(true)
     const { error } = await supabase.from('products').insert({
-      name:  newProduct.name,
+      name: newProduct.name,
       brand: newProduct.brand || null,
       price: parseFloat(newProduct.price),
     })
     setSaving(false)
-    if (error) { showToast('❌ Error adding product'); return }
+    if (error) { showToast('Error adding product'); return }
     await fetchProducts()
     setNewProduct({ name: '', price: '', brand: '' })
     setShowAddProduct(false)
     showToast(`"${newProduct.name}" added!`)
   }
 
-  /* ── Save Edit Product ── */
+  // Edit product with inline form
   const saveEditProduct = async () => {
     if (!editingProduct) return
     setSaving(true)
@@ -231,27 +289,28 @@ export default function AdminDashboard() {
       .update({ name: editingProduct.name, price: editingProduct.price, brand: editingProduct.brand })
       .eq('id', editingProduct.id)
     setSaving(false)
-    if (error) { showToast('❌ Error updating product'); return }
+    // If error, show it. Otherwise refresh products, close edit form, and show success toast
+    if (error) { showToast('Error updating product'); return }
     await fetchProducts()
     setEditingProduct(null)
     showToast('Product updated')
   }
 
-  /* ── Delete Product ── */
+  // Delete product with confirmation
   const deleteProduct = async (id: string, name: string) => {
     if (!confirm(`Remove "${name}"?`)) return
     const { error } = await supabase.from('products').delete().eq('id', id)
-    if (error) { showToast('❌ Error deleting'); return }
+    if (error) { showToast('Error deleting'); return }
     await fetchProducts()
     showToast('Product removed')
   }
 
-  /* ── Order actions ── */
-  const openEditOrder = (o: Order) => {
+  // Open order edit form and pre-fill with existing data
+  const openEditOrder = (o: AdminOrder) => {
     setEditingOrder(o)
     setEditOrderForm({ status: o.status, address: o.address ?? '', note: '' })
   }
-
+  // Save order edits (status and address for now, note is just internal and not saved to DB)
   const saveOrder = async () => {
     if (!editingOrder) return
     setSaving(true)
@@ -260,7 +319,7 @@ export default function AdminDashboard() {
       .update({ status: editOrderForm.status, address: editOrderForm.address })
       .eq('id', editingOrder.id)
     setSaving(false)
-    if (error) { showToast('❌ Error updating order'); return }
+    if (error) { showToast('Error updating order'); return }
     await fetchOrders()
     setEditingOrder(null)
     showToast('Order updated')
@@ -269,15 +328,49 @@ export default function AdminDashboard() {
   const cancelOrder = async (orderId: string) => {
     if (!confirm(`Cancel order ${orderId}?`)) return
     const { error } = await supabase.from('orders').update({ status: 'Cancelled' }).eq('id', orderId)
-    if (error) { showToast('❌ Error cancelling'); return }
+    if (error) { showToast('Error cancelling'); return }
     await fetchOrders()
     showToast(`Order ${orderId} cancelled`)
   }
 
-  /* ── Derived ── */
-  const filteredOrders   = orders.filter(o => orderFilter === 'All Orders' || o.status?.toLowerCase() === orderFilter.toLowerCase())
+  const deleteOrder = async (orderId: string) => {
+    if (!confirm(`Permanently delete cancelled order ${orderId}? This cannot be undone.`)) return
+    // delete order items first (foreign key constraint)
+    const { error: itemsError, count } = await supabase
+      .from('order_items')
+      .delete({ count: 'exact' })
+      .eq('order_id', orderId)
+      
+    if (itemsError) {
+      showToast('Error deleting order items')
+      console.error('deleteOrder: order_items delete failed:', itemsError)
+      return
+    }
 
-  /* ── Loading screen ── */
+    console.log(`deleteOrder: removed ${count} order_items for ${orderId}`)
+
+    // delete the order now that children are gone
+    const { error: orderError } = await supabase
+      .from('orders')
+      .delete()
+      .eq('id', orderId)
+
+    if (orderError) {
+      showToast('Error deleting order')
+      console.error('deleteOrder: final delete failed:', orderError)
+      return
+    }
+
+    await fetchOrders()
+    showToast(`Order ${orderId} deleted`)
+  }
+
+  // Filtered orders based on orderFilter state. If "All Orders" is selected, show all orders. Otherwise filter by status.
+  const filteredOrders = orders.filter(
+    o => orderFilter === 'All Orders' || o.status?.toLowerCase() === orderFilter.toLowerCase()
+  )
+
+  // Render loading state if we're still fetching data
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0a1628, #0f2756)' }}>
       <div className="text-center">
@@ -291,7 +384,7 @@ export default function AdminDashboard() {
     </div>
   )
 
-  /* ── Stat card data (uses live state) ── */
+  // Stat cards
   const STATS = [
     {
       label: 'Total Products', value: totalProductCount.toString(), change: 'Live',
@@ -318,17 +411,16 @@ export default function AdminDashboard() {
   return (
     <div className="flex min-h-screen" style={{ background: 'linear-gradient(160deg, #e8eeff 0%, #f0f4ff 50%, #eaf0ff 100%)' }}>
 
-      <Sidebar userName={userName} userEmail={userEmail} onLogout={handleLogout} />
+      <Sidebar userName={userName} userEmail={userEmail} />
 
       <div className="flex-1 flex flex-col min-w-0">
 
-        {/* ══ PAGE HEADER ══ */}
+        {/* PAGE HEADER */}
         <div className="relative overflow-hidden px-8 py-11" style={{ background: 'linear-gradient(120deg, #0a1628 0%, #0f2756 45%, #1a52c7 100%)' }}>
           <div className="pointer-events-none absolute -top-20 -right-20 w-80 h-80 rounded-full" style={{ background: 'radial-gradient(circle, rgba(99,160,255,0.15), transparent 70%)' }} />
           <div className="pointer-events-none absolute top-0 right-64 w-40 h-40 rounded-full" style={{ background: 'radial-gradient(circle, rgba(165,148,255,0.12), transparent 70%)' }} />
           <div className="pointer-events-none absolute -bottom-10 left-40 w-56 h-56 rounded-full" style={{ background: 'radial-gradient(circle, rgba(56,189,248,0.08), transparent 70%)' }} />
           <div className="pointer-events-none absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-
           <div className="relative z-10 flex items-center justify-between">
             <div>
               <div className="flex items-center gap-3 mb-2.5">
@@ -356,7 +448,7 @@ export default function AdminDashboard() {
 
         <div className="px-8 pb-12">
 
-          {/* ══ STAT CARDS ══ */}
+          {/* STAT CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 py-8">
             {STATS.map((s, i) => (
               <div key={i} className="relative rounded-2xl overflow-hidden hover:-translate-y-1.5 transition-all duration-300 cursor-default"
@@ -380,7 +472,7 @@ export default function AdminDashboard() {
             ))}
           </div>
 
-          {/* ══ MANAGE PRODUCTS ══ */}
+          {/* MANAGE PRODUCTS */}
           <section id="manage-products" className="mb-10">
             <SectionTitle title="Manage Products" icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 10V11"/></svg>} />
             <ProductsTable
@@ -392,7 +484,7 @@ export default function AdminDashboard() {
             />
           </section>
 
-          {/* ══ MANAGE ORDERS ══ */}
+          {/* MANAGE ORDERS */}
           <section id="manage-orders" className="mb-10">
             <SectionTitle title="Manage Orders" icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>} />
 
@@ -402,9 +494,14 @@ export default function AdminDashboard() {
                   <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                   Order List
                 </span>
+                <span className="flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)' }}>
+                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                  = Send receipt & status to customer
+                </span>
               </div>
 
               <div className="p-6">
+                {/* Filter chips */}
                 <div className="flex flex-wrap gap-2 mb-6">
                   {['All Orders', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(f => (
                     <button key={f} onClick={() => setOrderFilter(f)}
@@ -422,7 +519,7 @@ export default function AdminDashboard() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr style={{ background: 'linear-gradient(90deg, #eff6ff, #eef2ff)' }}>
-                        {['Order ID', 'City', 'Items', 'Total', 'Date', 'Status', 'Actions'].map(h => (
+                        {['Order ID', 'Customer', 'City', 'Items', 'Total', 'Date', 'Status', 'Actions'].map(h => (
                           <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider" style={{ color: '#1e40af' }}>{h}</th>
                         ))}
                       </tr>
@@ -436,6 +533,10 @@ export default function AdminDashboard() {
                         >
                           <td className="px-4 py-3.5 font-bold text-blue-700 text-xs">{o.id}</td>
                           <td className="px-4 py-3.5">
+                            <div className="font-semibold text-slate-800 text-sm">{o.customer ?? '—'}</div>
+                            {o.whatsapp && <div className="text-xs text-slate-400">{o.whatsapp}</div>}
+                          </td>
+                          <td className="px-4 py-3.5">
                             <div className="font-semibold text-slate-800 text-sm">{o.city ?? '—'}</div>
                             <div className="text-xs text-slate-400 truncate max-w-40">{o.address ?? ''}</div>
                           </td>
@@ -448,17 +549,48 @@ export default function AdminDashboard() {
                             </span>
                           </td>
                           <td className="px-4 py-3.5">
-                            <div className="flex gap-1.5">
+                            <div className="flex gap-1.5 items-center">
                               <Btn variant="edit" onClick={() => openEditOrder(o)} />
                               {o.status?.toLowerCase() !== 'cancelled' && (
                                 <Btn variant="cancel" onClick={() => cancelOrder(o.id)} />
+                              )}
+                              {/* Delete button: only visible for cancelled orders */}
+                              {o.status?.toLowerCase() === 'cancelled' && (
+                                <Btn variant="delete" onClick={() => deleteOrder(o.id)} />
+                              )}
+                              {/* WhatsApp receipt: sends receipt + delivery or cancel status */}
+                              {o.whatsapp && (
+                                <button
+                                  onClick={async () => {
+                                    let items = orderItemsMap[o.id]
+                                    if (!items) {
+                                      const { data } = await supabase
+                                        .from('order_items')
+                                        .select('product_name, size, colour, quantity, price_at_purchase')
+                                        .eq('order_id', o.id)
+                                      items = (data ?? []) as AdminOrderItem[]
+                                      setOrderItemsMap(prev => ({ ...prev, [o.id]: items }))
+                                    }
+                                    window.open(buildWaUrl(o, items), '_blank')
+                                  }}
+                                  title={`Send receipt & status to ${o.customer ?? 'customer'} via WhatsApp`}
+                                  className="px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all inline-flex items-center justify-center"
+                                  style={{ background: '#dcfce7', color: '#16a34a' }}
+                                  onMouseEnter={e => (e.currentTarget.style.background = '#bbf7d0')}
+                                  onMouseLeave={e => (e.currentTarget.style.background = '#dcfce7')}
+                                >
+                                  {/* WhatsApp icon */}
+                                  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                                  </svg>
+                                </button>
                               )}
                             </div>
                           </td>
                         </tr>
                       ))}
                       {filteredOrders.length === 0 && (
-                        <tr><td colSpan={7} className="px-4 py-12 text-center text-slate-400 text-sm">No orders found.</td></tr>
+                        <tr><td colSpan={8} className="px-4 py-12 text-center text-slate-400 text-sm">No orders found.</td></tr>
                       )}
                     </tbody>
                   </table>
@@ -467,7 +599,7 @@ export default function AdminDashboard() {
             </div>
           </section>
 
-          {/* ══ SERVER MONITOR ══ */}
+          {/* SERVER MONITOR */}
           <section id="server-monitor" className="mb-10">
             <SectionTitle title="Server Monitor" icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>} />
 
@@ -481,10 +613,10 @@ export default function AdminDashboard() {
                 </div>
                 <div className="p-6 grid grid-cols-2 gap-4">
                   {[
-                    { label: 'CPU Usage',    value: metrics.cpu,  sub: '4 cores active',                               color: '#3b82f6', bar: 'linear-gradient(90deg, #1d4ed8, #60a5fa)' },
+                    { label: 'CPU Usage', value: metrics.cpu,  sub: '4 cores active',                               color: '#3b82f6', bar: 'linear-gradient(90deg, #1d4ed8, #60a5fa)' },
                     { label: 'Memory (RAM)', value: metrics.ram,  sub: `${(metrics.ram * 0.1).toFixed(1)} GB / 10 GB`,  color: '#06b6d4', bar: 'linear-gradient(90deg, #0e7490, #22d3ee)' },
-                    { label: 'Disk I/O',     value: metrics.disk, sub: 'SSD – 220 MB/s',                               color: '#f59e0b', bar: 'linear-gradient(90deg, #b45309, #fbbf24)' },
-                    { label: 'Network',      value: metrics.net,  sub: '↑ 24 Mbps ↓ 12 Mbps',                         color: '#8b5cf6', bar: 'linear-gradient(90deg, #6d28d9, #a78bfa)' },
+                    { label: 'Disk I/O', value: metrics.disk, sub: 'SSD – 220 MB/s',                               color: '#f59e0b', bar: 'linear-gradient(90deg, #b45309, #fbbf24)' },
+                    { label: 'Network', value: metrics.net,  sub: '↑ 24 Mbps ↓ 12 Mbps',                         color: '#8b5cf6', bar: 'linear-gradient(90deg, #6d28d9, #a78bfa)' },
                   ].map(m => (
                     <div key={m.label} className="rounded-xl p-4" style={{ background: 'linear-gradient(135deg, #f0f4ff, #eef2ff)' }}>
                       <div className="flex items-center justify-between mb-3">
@@ -529,7 +661,7 @@ export default function AdminDashboard() {
         </div>{/* /px-8 */}
       </div>{/* /main */}
 
-      {/* ══ MODALS ══ */}
+      {/* MODALS */}
       {showAddProduct && (
         <Modal title="Add New Product" onClose={() => setShowAddProduct(false)}>
           <div className="space-y-4">
@@ -595,8 +727,7 @@ export default function AdminDashboard() {
   )
 }
 
-/* ══ SUB-COMPONENTS ══ */
-
+// Reusable components
 function SectionTitle({ title, icon }: { title: string; icon: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 mb-5">
@@ -609,9 +740,9 @@ function SectionTitle({ title, icon }: { title: string; icon: React.ReactNode })
 
 function Btn({ variant, onClick }: { variant: 'edit' | 'delete' | 'cancel'; onClick: () => void }) {
   const styles = {
-    edit:   { bg: '#eff6ff', hoverBg: '#dbeafe', color: '#1d4ed8', label: '✏️' },
-    delete: { bg: '#fef2f2', hoverBg: '#fee2e2', color: '#dc2626', label: '🗑️' },
-    cancel: { bg: '#fef2f2', hoverBg: '#fee2e2', color: '#dc2626', label: '🚫' },
+    edit: { bg: '#eff6ff', hoverBg: '#dbeafe', color: '#1d4ed8', label: '' },
+    delete: { bg: '#fef2f2', hoverBg: '#fee2e2', color: '#dc2626', label: '' },
+    cancel: { bg: '#fef2f2', hoverBg: '#fee2e2', color: '#dc2626', label: '' },
   }[variant]
 
   return (

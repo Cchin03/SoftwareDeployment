@@ -1,31 +1,41 @@
-"use client";
-
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server"; 
+import { getCartItems } from "@/lib/cartActions";
+import { CartClient } from "./cartClient";
 
-export default function CartPage() {
-  const router = useRouter();
+export default async function CartPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // Redirect unauthenticated users to login
+  if (!user) {
+    redirect("/login?next=/cart");
+  }
+
+  const items = await getCartItems();
+  // Pass the last-visited category id for better back button UX.
+  //  Here we just read from the first cart item, but you can also read from a cookie/localStorage if you set it on category page visits.
   return (
     <div className="min-h-screen bg-zinc-50 font-sans">
       <header className="sticky top-0 z-50 bg-white border-b border-zinc-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-          <Link href="/" className="text-xl font-bold tracking-tight text-zinc-900">
+          <Link
+            href="/"
+            className="text-xl font-bold tracking-tight text-zinc-900"
+          >
             shop<span className="text-indigo-500">.</span>io
           </Link>
+          <span className="text-sm text-zinc-500">
+            Signed in as{" "}
+            <span className="font-medium text-zinc-700">{user.email}</span>
+          </span>
         </div>
       </header>
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-        <h1 className="text-3xl font-extrabold text-zinc-900 mb-2">Your Cart</h1>
-        <p className="text-zinc-500 text-sm mb-10">Review your items before checkout</p>
-        <div className="bg-white rounded-2xl border border-zinc-200 p-12 text-center">
-          <span className="text-5xl block mb-4">🛒</span>
-          <h2 className="text-xl font-bold text-zinc-900 mb-2">Your cart is empty</h2>
-          <p className="text-zinc-500 text-sm mb-6">Looks like you haven&apos;t added anything yet.</p>
-          <button onClick={() => router.back()} className="inline-flex items-center gap-2 bg-zinc-900 text-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-zinc-700 transition-colors">
-            ← Continue shopping
-          </button>
-        </div>
-      </div>
+
+      <CartClient initialItems={items} />
     </div>
   );
 }

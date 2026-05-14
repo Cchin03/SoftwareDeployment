@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import { AddToCartButton } from "@/components/addToCartButton";
 
 import {
   getProductImageForSelection,
@@ -9,9 +10,12 @@ import {
   type Product,
 } from "@/lib/productData";
 
+import type { ProductVariant } from "@/lib/supabase/types"; 
+
 type ProductDetailViewProps = {
   category: Category;
   product: Product;
+  variants: ProductVariant[]; // fetched in page.tsx, passed down here
 };
 
 type SelectorGroupProps = {
@@ -36,16 +40,16 @@ function SelectorGroup({
       <div className="flex flex-wrap gap-2">
         {options.map((option) => {
           const isSelected = option === selectedOption;
-
           return (
             <button
               key={option}
               type="button"
               onClick={() => onChange(option)}
-              className={`rounded-full border px-4 py-2 text-sm transition-colors ${isSelected
+              className={`rounded-full border px-4 py-2 text-sm transition-colors ${
+                isSelected
                   ? "border-zinc-900 bg-zinc-900 text-white"
                   : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400"
-                }`}
+              }`}
             >
               {option}
             </button>
@@ -91,6 +95,7 @@ function RatingSummary({
 export function ProductDetailView({
   category,
   product,
+  variants,
 }: ProductDetailViewProps) {
   const [selectedSize, setSelectedSize] = useState(product.sizes[0] ?? "");
   const [selectedColour, setSelectedColour] = useState(product.colours[0] ?? "");
@@ -105,6 +110,18 @@ export function ProductDetailView({
         selectedPattern,
       }),
     [product, selectedColour, selectedPattern],
+  );
+
+  // Find the matching variant from Supabase based on current selector state
+  const matchedVariant = useMemo(
+    () =>
+      variants.find(
+        (v) =>
+          v.size === selectedSize &&
+          v.colour === selectedColour &&
+          v.pattern === selectedPattern
+      ) ?? null,
+    [variants, selectedSize, selectedColour, selectedPattern]
   );
 
   return (
@@ -125,7 +142,7 @@ export function ProductDetailView({
             />
           ) : (
             <span className="text-[8rem]" aria-hidden="true">
-              {product.emoji ?? "\u{1F6CD}"}
+              {product.emoji ?? "🛍️"}
             </span>
           )}
         </div>
@@ -215,13 +232,11 @@ export function ProductDetailView({
           </p>
         )}
 
-        <button
-          type="button"
-          className="mt-6 inline-flex items-center rounded-full bg-zinc-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-zinc-700"
-        >
-          Add to Cart
-        </button>
-        {/* TODO: Hand off selected product options to cart flow. */}
+        {/* AddToCartButton receives the already-matched variant — no duplicate selector UI */}
+        <AddToCartButton
+          productPrice={product.price}
+          matchedVariant={matchedVariant}
+        />
       </section>
 
       {product.sizePage && isSizeGuideOpen && (

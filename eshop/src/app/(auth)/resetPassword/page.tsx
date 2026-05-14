@@ -41,6 +41,7 @@ export default function ResetPasswordPage() {
 
     const { error } = await supabase.auth.updateUser({ password })
 
+    // If error, show it. Otherwise show success message and redirect to login after a short delay
     if (error) {
       setError(error.message)
     } else {
@@ -50,7 +51,7 @@ export default function ResetPasswordPage() {
     }
   }
 
-  // ── States ──
+  // Show error if link is invalid or expired, otherwise show loading until ready
   if (error && !ready) {
     return (
       <div className="min-h-screen bg-blue-50 flex items-center justify-center px-4">
@@ -131,7 +132,7 @@ export default function ResetPasswordPage() {
               </label>
               <div className="relative">
                 <input
-                  type={showConfirm ? 'text' : 'password'}  // ← showConfirm
+                  type={showConfirm ? 'text' : 'password'}  
                   placeholder="••••••••"
                   value={confirm}
                   onChange={e => setConfirm(e.target.value)}
@@ -140,7 +141,7 @@ export default function ResetPasswordPage() {
                 />
                 <button
                   type="button"
-                  onClick={() => setShowConfirm(v => !v)}  // ← setShowConfirm
+                  onClick={() => setShowConfirm(v => !v)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
                 >
                   {showConfirm ? (
