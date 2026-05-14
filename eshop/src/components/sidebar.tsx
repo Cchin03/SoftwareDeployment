@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { logout } from '@/lib/authActions'
 
 const NAV_ITEMS = [
   {
@@ -20,10 +21,9 @@ const NAV_ITEMS = [
 interface SidebarProps {
   userName?: string
   userEmail?: string
-  onLogout?: () => void
 }
 
-export default function Sidebar({ userName = 'Admin', userEmail = 'admin@shopkl.com', onLogout }: SidebarProps) {
+export default function Sidebar({ userName = 'Admin', userEmail = 'admin@shopkl.com' }: SidebarProps) {
   const [open, setOpen] = useState(true)
 
   const initials = userName.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()
@@ -37,7 +37,7 @@ export default function Sidebar({ userName = 'Admin', userEmail = 'admin@shopkl.
         {/* Decorative orbs */}
         <div className="pointer-events-none absolute bottom-24 left-0 w-40 h-40 rounded-full" style={{ background: 'radial-gradient(circle at bottom left, rgba(124,112,255,0.14), transparent 70%)' }} />
 
-        {/* ── Brand / Hamburger ── */}
+        {/* Brand / Hamburger */}
         <div className="relative flex items-center gap-3 px-4 h-16 border-b" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
           <button
             onClick={() => setOpen(o => !o)}
@@ -60,7 +60,7 @@ export default function Sidebar({ userName = 'Admin', userEmail = 'admin@shopkl.
           )}
         </div>
 
-        {/* ── Profile card ── */}
+        {/* Profile card */}
         <div className={`relative ${open ? 'mx-3 mt-5 mb-2' : 'flex justify-center mt-4 mb-2'}`}>
           {open ? (
             <div
@@ -95,14 +95,14 @@ export default function Sidebar({ userName = 'Admin', userEmail = 'admin@shopkl.
           )}
         </div>
 
-        {/* ── Nav label ── */}
+        {/* Navbar label */}
         {open && (
           <p className="px-5 mt-4 mb-2 text-[10px] font-bold uppercase tracking-[0.15em]" style={{ color: 'rgba(147,197,253,0.45)' }}>
             Main Menu
           </p>
         )}
 
-        {/* ── Nav links ── */}
+        {/* Navbar links */}
         <nav className="flex-1 px-3 space-y-0.5 overflow-y-auto">
           {NAV_ITEMS.map(item => (
             <a
@@ -129,7 +129,7 @@ export default function Sidebar({ userName = 'Admin', userEmail = 'admin@shopkl.
           {open ? (
             <div className="space-y-2">
               <button
-                onClick={onLogout}
+                onClick={logout}
                 className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-red-300/90 hover:text-red-200 transition-all text-sm font-medium"
                 onMouseEnter={e => (e.currentTarget.style.background = 'rgba(239,68,68,0.12)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
@@ -144,7 +144,7 @@ export default function Sidebar({ userName = 'Admin', userEmail = 'admin@shopkl.
           ) : (
             <div className="flex justify-center">
               <button
-                onClick={onLogout}
+                onClick={logout}
                 title="Logout"
                 className="w-10 h-10 flex items-center justify-center rounded-xl text-red-300/80 hover:text-red-200 transition-all"
                 onMouseEnter={e => (e.currentTarget.style.background = 'rgba(239,68,68,0.12)')}

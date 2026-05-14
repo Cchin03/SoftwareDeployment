@@ -1,22 +1,22 @@
 'use client'
 
 import Link from 'next/link'
+import { logout } from '@/lib/authActions'
 
 const NAV_CATEGORIES = [
   { id: 'electronics', name: 'Electronics' },
   { id: 'fashion', name: 'Fashion' },
   { id: 'home', name: 'Home & Living' },
-  { id: 'beauty', name: 'Beauty'},
+  { id: 'beauty', name: 'Beauty' },
 ]
 
 interface NavbarProps {
   isGuest: boolean
   cartCount: number
   onCartClick: (e: React.MouseEvent) => void
-  onLogout: () => void
 }
 
-export default function Navbar({ isGuest, cartCount, onCartClick, onLogout }: NavbarProps) {
+export default function Navbar({ isGuest, cartCount, onCartClick }: NavbarProps) {
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-zinc-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
@@ -53,7 +53,7 @@ export default function Navbar({ isGuest, cartCount, onCartClick, onLogout }: Na
             </svg>
             {cartCount > 0 && (
               <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-indigo-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
-                {cartCount}
+                {cartCount > 99 ? '99+' : cartCount}
               </span>
             )}
             {isGuest && (
@@ -61,7 +61,7 @@ export default function Navbar({ isGuest, cartCount, onCartClick, onLogout }: Na
             )}
           </Link>
 
-          {/* Auth buttons */}
+          {/* Auth */}
           {isGuest ? (
             <>
               <Link href="/login" className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors hidden sm:block">
@@ -72,12 +72,15 @@ export default function Navbar({ isGuest, cartCount, onCartClick, onLogout }: Na
               </Link>
             </>
           ) : (
-            <button
-              onClick={onLogout}
-              className="text-sm font-medium text-red-500 hover:text-red-700 transition-colors hidden sm:block"
-            >
-              Logout
-            </button>
+            // Use a form so the server action clears the cookie server-side
+            <form action={logout}>
+              <button
+                type="submit"
+                className="text-sm font-medium text-red-500 hover:text-red-700 transition-colors hidden sm:block"
+              >
+                Logout
+              </button>
+            </form>
           )}
         </div>
 
