@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [main]
 
-defaults:
-  run:
-    working-directory: SoftwareDeployment      # ← tells all steps to run inside SoftwareDeployment/
-
 jobs:
 
   test:
@@ -23,7 +19,6 @@ jobs:
         with:
           node-version: 24
           cache: 'npm'
-          cache-dependency-path: SoftwareDeployment/package-lock.json   # ← point to correct lockfile
 
       - name: Install dependencies
         run: npm ci
@@ -46,7 +41,6 @@ jobs:
         with:
           node-version: 24
           cache: 'npm'
-          cache-dependency-path: SoftwareDeployment/package-lock.json   # ← point to correct lockfile
 
       - name: Install dependencies
         run: npm ci
