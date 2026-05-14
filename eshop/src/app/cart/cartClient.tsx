@@ -37,7 +37,7 @@ export function CartClient({ initialItems, backHref = "/" }: Props) {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          ← Continue shopping
+           Continue shopping
         </button>
 
         <h1 className="text-3xl font-extrabold text-zinc-900 mb-2">Your Cart</h1>
@@ -69,7 +69,7 @@ export function CartClient({ initialItems, backHref = "/" }: Props) {
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
-          ← Continue shopping
+           Continue shopping
       </button>
 
       {/* Page header */}

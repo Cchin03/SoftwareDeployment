@@ -740,9 +740,9 @@ function SectionTitle({ title, icon }: { title: string; icon: React.ReactNode })
 
 function Btn({ variant, onClick }: { variant: 'edit' | 'delete' | 'cancel'; onClick: () => void }) {
   const styles = {
-    edit: { bg: '#eff6ff', hoverBg: '#dbeafe', color: '#1d4ed8', label: '' },
-    delete: { bg: '#fef2f2', hoverBg: '#fee2e2', color: '#dc2626', label: '' },
-    cancel: { bg: '#fef2f2', hoverBg: '#fee2e2', color: '#dc2626', label: '' },
+    edit: { bg: '#eff6ff', hoverBg: '#dbeafe', color: '#1d4ed8', label: '✏️' },
+    delete: { bg: '#fef2f2', hoverBg: '#fee2e2', color: '#dc2626', label: '🗑️' },
+    cancel: { bg: '#fef2f2', hoverBg: '#fee2e2', color: '#dc2626', label: '❌' },
   }[variant]
 
   return (
