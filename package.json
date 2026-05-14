@@ -2,11 +2,10 @@
   "name": "eshop",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
+   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "test": "echo \"No tests yet\" && exit 0"    
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
@@ -25,13 +24,5 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   }
-}
-{
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "test": "echo \"No tests yet\" && exit 0"    
-  }
+  
 }
