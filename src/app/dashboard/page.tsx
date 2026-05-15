@@ -326,7 +326,7 @@ export default function ShopDashboard() {
       <footer className="border-t border-zinc-200 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <span className="text-xl font-bold tracking-tight text-zinc-900">shop<span className="text-indigo-500">.</span>io</span>
-          <p className="text-sm text-zinc-400">© 2026 shop.io — All rights reserved.</p>
+          <p className="text-sm text-zinc-400">© 2026 shop.io — All rights reserved. v1.0.0</p>
           <div className="flex items-center gap-5 text-sm text-zinc-400">
             <a href="#" className="hover:text-zinc-700">Privacy</a>
             <a href="#" className="hover:text-zinc-700">Terms</a>
