@@ -18,6 +18,12 @@ export default function RegisterPage() {
     setError('')
     setLoading(true)
 
+    if (form.password !== form.confirm) {
+      setError('Passwords do not match.')
+      setLoading(false)
+      return
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
@@ -28,10 +34,6 @@ export default function RegisterPage() {
       setLoading(false)
       return
     }
-    if (form.password !== form.confirm) {
-        setError('Passwords do not match.')
-        return
-      }
 
     await supabase.from('profiles').update({
       name: form.name,
@@ -83,7 +85,18 @@ export default function RegisterPage() {
       </div>
 
       {/* Right Panel */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+
+        {/* Mobile-only: Back to Shop link */}
+        <div className="lg:hidden w-full max-w-sm mb-6">
+          <Link href="/" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-blue-600 transition">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+            Back to Shop
+          </Link>
+        </div>
+
         <div className="w-full max-w-sm">
 
           {/* Header */}

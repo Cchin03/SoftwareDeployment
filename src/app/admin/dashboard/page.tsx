@@ -97,13 +97,7 @@ function buildWaUrl(o: AdminOrder, items: AdminOrderItem[]): string {
   return `https://wa.me/${clean}?text=${msg}`
 }
 
-const SERVICES = [
-  { name: 'Web Server', online: true,  status: 'Online' },
-  { name: 'Database (Supabase)', online: true,  status: 'Online' },
-  { name: 'Payment Gateway', online: true,  status: 'Online' },
-  { name: 'Email Service', online: false, status: 'Slow'   },
-  { name: 'CDN / Storage', online: true,  status: 'Online' },
-]
+
 
 // Admin Dashboard page
 export default function AdminDashboard() {
@@ -116,7 +110,12 @@ export default function AdminDashboard() {
   const [orderFilter, setOrderFilter] = useState('All Orders')
   const [toast, setToast] = useState('')
   // temporary random metrics for demo purposes
-  const [metrics, setMetrics] = useState({ cpu: 34, ram: 61, disk: 22, net: 48 })
+  const [metrics, setMetrics] = useState([
+    { label: 'LCP', value: 0, sub: 'Largest Contentful Paint', color: '#3b82f6', bar: 'linear-gradient(90deg,#3b82f6,#6366f1)' },
+    { label: 'FID', value: 0, sub: 'First Input Delay (ms)',   color: '#10b981', bar: 'linear-gradient(90deg,#10b981,#06b6d4)' },
+    { label: 'CLS', value: 0, sub: 'Cumulative Layout Shift',  color: '#f59e0b', bar: 'linear-gradient(90deg,#f59e0b,#ef4444)' },
+    { label: 'TTFB', value: 0, sub: 'Time to First Byte (ms)', color: '#8b5cf6', bar: 'linear-gradient(90deg,#8b5cf6,#ec4899)' },
+  ])  
   const [lastChecked, setLastChecked] = useState('Just now')
   const [userName, setUserName] = useState('Admin')
   const [userEmail, setUserEmail] = useState('admin@shopkl.com')
@@ -139,6 +138,13 @@ export default function AdminDashboard() {
 
   // Order items cache: keyed by order id
   const [orderItemsMap, setOrderItemsMap] = useState<Record<string, AdminOrderItem[]>>({})
+
+  // Service status (real checks)
+  const [services, setServices] = useState([
+    { name: 'Web Server',          online: false, status: 'Checking…' },
+    { name: 'Database (Supabase)', online: false, status: 'Checking…' },
+    { name: 'CDN / Storage',       online: false, status: 'Checking…' },
+  ])
 
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
 
@@ -249,19 +255,59 @@ export default function AdminDashboard() {
     init()
   }, [fetchProducts, fetchOrders, fetchUserCount])
 
-  // Metrics ticker (Server monitoring, temporary)
+  // Real Web Vitals from the browser
   useEffect(() => {
-    const id = setInterval(() => {
-      setMetrics({
-        cpu: Math.floor(30 + Math.random() * 25),
-        ram: Math.floor(55 + Math.random() * 20),
-        disk: Math.floor(15 + Math.random() * 30),
-        net: Math.floor(35 + Math.random() * 40),
+    if (typeof window === 'undefined') return
+    import('web-vitals').then(({ onLCP, onINP, onCLS, onTTFB }) => {
+      onLCP(({ value }: { value: number }) => {
+        setMetrics(prev => prev.map(m =>
+          m.label === 'LCP ( Largest Contentful Paint)' ? { ...m, value: Math.round(value), barValue: Math.min(Math.round((value / 4000) * 100), 100), sub: `LCP: ${(value / 1000).toFixed(2)}s ${value < 2500 ? '✅ Good' : value < 4000 ? '⚠️ Needs work' : '❌ Poor'}` } : m
+        ))
       })
-      setLastChecked(new Date().toLocaleTimeString())
-    }, 4000)
-    return () => clearInterval(id)
+      onINP(({ value }: { value: number }) => {
+        setMetrics(prev => prev.map(m =>
+          m.label === 'FID (Interaction to Next Paint)' ? { ...m, value: Math.round(value), barValue: Math.min(Math.round((value / 500) * 100), 100), sub: `INP: ${Math.round(value)}ms ${value < 200 ? '✅ Good' : value < 500 ? '⚠️ Needs work' : '❌ Poor'}` } : m
+        ))
+      })
+      onCLS(({ value }: { value: number }) => {
+        setMetrics(prev => prev.map(m =>
+          m.label === 'CLS (Cumulative Layout Shift)' ? { ...m, value: Math.round(value * 1000) / 10, barValue: Math.min(Math.round((value / 0.25) * 100), 100), sub: `CLS: ${value.toFixed(3)} ${value < 0.1 ? '✅ Good' : value < 0.25 ? '⚠️ Needs work' : '❌ Poor'}` } : m
+        ))
+      })
+      onTTFB(({ value }: { value: number }) => {
+        setMetrics(prev => prev.map(m =>
+          m.label === 'TTFB (Time to First Byte)' ? { ...m, value: Math.round(value), barValue: Math.min(Math.round((value / 1800) * 100), 100), sub: `TTFB: ${Math.round(value)}ms ${value < 800 ? '✅ Good' : value < 1800 ? '⚠️ Needs work' : '❌ Poor'}` } : m
+        ))
+      })
+    })
   }, [])
+
+  // Real service status checks (re-runs every 60s)
+  useEffect(() => {
+    const checkServices = async () => {
+      const webOk = await fetch('/api/health', { method: 'HEAD', cache: 'no-store' })
+        .then(r => r.ok).catch(() => false)
+
+      const { error: dbError } = await supabase.from('profiles').select('id').limit(1)
+      const dbOk = !dbError
+
+      const cdnOk = await fetch(
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/bucket`,
+        { method: 'GET', cache: 'no-store' }
+      ).then(r => r.status < 500).catch(() => false)
+
+      setServices([
+        { name: 'Web Server',          online: webOk, status: webOk ? 'Online' : 'Offline' },
+        { name: 'Database (Supabase)', online: dbOk,  status: dbOk  ? 'Online' : 'Offline' },
+        { name: 'CDN / Storage',       online: cdnOk, status: cdnOk ? 'Online' : 'Offline' },
+      ])
+      setLastChecked(new Date().toLocaleTimeString())
+    }
+
+    checkServices()
+    const interval = setInterval(checkServices, 60_000)
+    return () => clearInterval(interval)
+  }, [supabase])
 
   // Product actions
   const addProduct = async () => {
@@ -606,25 +652,23 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 rounded-2xl overflow-hidden shadow-lg" style={{ background: '#fff', border: '1px solid rgba(59,130,246,0.1)' }}>
                 <div className="flex items-center justify-between px-6 py-4" style={{ background: 'linear-gradient(90deg, #0f2756, #1e4db7)' }}>
-                  <span className="text-white font-bold text-sm">📈 System Metrics</span>
+                  <span className="text-white font-bold text-sm"> System Metrics</span>
                   <span className="flex items-center gap-1.5 text-xs font-medium" style={{ color: 'rgba(255,255,255,0.65)' }}>
                     <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />Live
                   </span>
                 </div>
                 <div className="p-6 grid grid-cols-2 gap-4">
-                  {[
-                    { label: 'CPU Usage', value: metrics.cpu,  sub: '4 cores active',                               color: '#3b82f6', bar: 'linear-gradient(90deg, #1d4ed8, #60a5fa)' },
-                    { label: 'Memory (RAM)', value: metrics.ram,  sub: `${(metrics.ram * 0.1).toFixed(1)} GB / 10 GB`,  color: '#06b6d4', bar: 'linear-gradient(90deg, #0e7490, #22d3ee)' },
-                    { label: 'Disk I/O', value: metrics.disk, sub: 'SSD – 220 MB/s',                               color: '#f59e0b', bar: 'linear-gradient(90deg, #b45309, #fbbf24)' },
-                    { label: 'Network', value: metrics.net,  sub: '↑ 24 Mbps ↓ 12 Mbps',                         color: '#8b5cf6', bar: 'linear-gradient(90deg, #6d28d9, #a78bfa)' },
-                  ].map(m => (
+                  {metrics.map(m => (
                     <div key={m.label} className="rounded-xl p-4" style={{ background: 'linear-gradient(135deg, #f0f4ff, #eef2ff)' }}>
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">{m.label}</span>
-                        <span className="text-xl font-extrabold" style={{ color: m.color }}>{m.value}%</span>
+                        <span className="text-xl font-extrabold" style={{ color: m.color }}>
+                          {m.label === 'CLS' ? (m.value / 100).toFixed(3) : m.value}
+                          <span className="text-sm font-medium ml-0.5">{m.label === 'LCP' ? 'ms' : m.label === 'TTFB' ? 'ms' : m.label === 'FID' ? 'ms' : m.label === 'CLS' ? '' : '%'}</span>
+                        </span>
                       </div>
                       <div className="w-full h-2 rounded-full" style={{ background: 'rgba(0,0,0,0.07)' }}>
-                        <div className="h-2 rounded-full transition-all duration-700" style={{ width: `${m.value}%`, background: m.bar }} />
+                        <div className="h-2 rounded-full transition-all duration-700" style={{ width: `${(m as any).barValue ?? Math.min(m.value, 100)}%`, background: m.bar }} />
                       </div>
                       <div className="text-xs text-slate-400 mt-2">{m.sub}</div>
                     </div>
@@ -638,7 +682,7 @@ export default function AdminDashboard() {
                   <span className="text-white font-bold text-sm">💓 Service Status</span>
                 </div>
                 <div className="p-5 space-y-3">
-                  {SERVICES.map(s => (
+                  {services.map(s => (
                     <div key={s.name} className="flex items-center justify-between p-3 rounded-xl" style={{ background: '#f8faff' }}>
                       <div className="flex items-center gap-2.5">
                         <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${s.online ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
