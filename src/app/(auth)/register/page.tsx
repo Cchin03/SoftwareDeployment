@@ -35,12 +35,20 @@ export default function RegisterPage() {
       return
     }
 
-    await supabase.from('profiles').update({
+    // upsert ensures name/age are saved even if the trigger hasn't fired yet
+    await supabase.from('profiles').upsert({
+      id: data.user.id,
       name: form.name,
       age: parseInt(form.age),
-    }).eq('id', data.user.id)
+    })
 
-    router.push('/dashboard')
+    if (data.session) {
+      // Email confirmation is OFF — user is logged in immediately
+      router.push('/')
+    } else {
+      // Email confirmation is ON — redirect to login with a message
+      router.push('/login?message=check-your-email')
+    }
     setLoading(false)
   }
 

@@ -259,24 +259,32 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (typeof window === 'undefined') return
     import('web-vitals').then(({ onLCP, onINP, onCLS, onTTFB }) => {
-      onLCP(({ value }: { value: number }) => {
+      onLCP(({ value }) => {
         setMetrics(prev => prev.map(m =>
-          m.label === 'LCP ( Largest Contentful Paint)' ? { ...m, value: Math.round(value), barValue: Math.min(Math.round((value / 4000) * 100), 100), sub: `LCP: ${(value / 1000).toFixed(2)}s ${value < 2500 ? '✅ Good' : value < 4000 ? '⚠️ Needs work' : '❌ Poor'}` } : m
+          m.label === 'LCP'
+            ? { ...m, value: Math.round(value), barValue: Math.min(Math.round((value / 4000) * 100), 100), sub: `LCP: ${(value / 1000).toFixed(2)}s ${value < 2500 ? '✅ Good' : value < 4000 ? '⚠️ Needs work' : '❌ Poor'}` }
+            : m
         ))
       })
-      onINP(({ value }: { value: number }) => {
+      onINP(({ value }) => {
         setMetrics(prev => prev.map(m =>
-          m.label === 'FID (Interaction to Next Paint)' ? { ...m, value: Math.round(value), barValue: Math.min(Math.round((value / 500) * 100), 100), sub: `INP: ${Math.round(value)}ms ${value < 200 ? '✅ Good' : value < 500 ? '⚠️ Needs work' : '❌ Poor'}` } : m
+          m.label === 'FID'
+            ? { ...m, value: Math.round(value), barValue: Math.min(Math.round((value / 500) * 100), 100), sub: `INP: ${Math.round(value)}ms ${value < 200 ? '✅ Good' : value < 500 ? '⚠️ Needs work' : '❌ Poor'}` }
+            : m
         ))
       })
-      onCLS(({ value }: { value: number }) => {
+      onCLS(({ value }) => {
         setMetrics(prev => prev.map(m =>
-          m.label === 'CLS (Cumulative Layout Shift)' ? { ...m, value: Math.round(value * 1000) / 10, barValue: Math.min(Math.round((value / 0.25) * 100), 100), sub: `CLS: ${value.toFixed(3)} ${value < 0.1 ? '✅ Good' : value < 0.25 ? '⚠️ Needs work' : '❌ Poor'}` } : m
+          m.label === 'CLS'
+            ? { ...m, value: Math.round(value * 1000) / 10, barValue: Math.min(Math.round((value / 0.25) * 100), 100), sub: `CLS: ${value.toFixed(3)} ${value < 0.1 ? '✅ Good' : value < 0.25 ? '⚠️ Needs work' : '❌ Poor'}` }
+            : m
         ))
       })
-      onTTFB(({ value }: { value: number }) => {
+      onTTFB(({ value }) => {
         setMetrics(prev => prev.map(m =>
-          m.label === 'TTFB (Time to First Byte)' ? { ...m, value: Math.round(value), barValue: Math.min(Math.round((value / 1800) * 100), 100), sub: `TTFB: ${Math.round(value)}ms ${value < 800 ? '✅ Good' : value < 1800 ? '⚠️ Needs work' : '❌ Poor'}` } : m
+          m.label === 'TTFB'
+            ? { ...m, value: Math.round(value), barValue: Math.min(Math.round((value / 1800) * 100), 100), sub: `TTFB: ${Math.round(value)}ms ${value < 800 ? '✅ Good' : value < 1800 ? '⚠️ Needs work' : '❌ Poor'}` }
+            : m
         ))
       })
     })
@@ -292,14 +300,14 @@ export default function AdminDashboard() {
       const dbOk = !dbError
 
       const cdnOk = await fetch(
-        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/bucket`,
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/`,
         { method: 'GET', cache: 'no-store' }
       ).then(r => r.status < 500).catch(() => false)
 
       setServices([
-        { name: 'Web Server',          online: webOk, status: webOk ? 'Online' : 'Offline' },
+        { name: 'Web Server', online: webOk, status: webOk ? 'Online' : 'Offline' },
         { name: 'Database (Supabase)', online: dbOk,  status: dbOk  ? 'Online' : 'Offline' },
-        { name: 'CDN / Storage',       online: cdnOk, status: cdnOk ? 'Online' : 'Offline' },
+        { name: 'CDN / Storage', online: cdnOk, status: cdnOk ? 'Online' : 'Offline' },
       ])
       setLastChecked(new Date().toLocaleTimeString())
     }
