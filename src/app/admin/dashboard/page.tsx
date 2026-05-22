@@ -687,7 +687,7 @@ export default function AdminDashboard() {
               {/* Service status */}
               <div className="rounded-2xl overflow-hidden shadow-lg" style={{ background: '#fff', border: '1px solid rgba(59,130,246,0.1)' }}>
                 <div className="px-6 py-4" style={{ background: 'linear-gradient(90deg, #0f2756, #1e4db7)' }}>
-                  <span className="text-white font-bold text-sm">💓 Service Status</span>
+                  <span className="text-white font-bold text-sm">Service Status</span>
                 </div>
                 <div className="p-5 space-y-3">
                   {services.map(s => (
