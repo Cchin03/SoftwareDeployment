@@ -93,10 +93,21 @@ export async function getCartItems(): Promise<CartItem[]> {
   });
 }
 
-// Add to cart function checks stock and either adds a new item or updates quantity if the same variant already exists in cart. 
-// It also includes optimistic UI updates for a snappier user experience. 
-export async function addToCart(variantId: string, quantity = 1) {
-  const { supabase, user } = await getAuthUser();
+export type CartActionResult = {
+  success: boolean;
+  reason?: "auth" | "stock" | "error";
+};
+
+// Add to cart function checks stock and either adds a new item or updates quantity if the same variant already exists in cart.
+// Returns a result object instead of throwing so that production Next.js error sanitization doesn't swallow the reason.
+export async function addToCart(variantId: string, quantity = 1): Promise<CartActionResult> {
+  // Check auth manually here — getAuthUser() throws, which gets sanitized in production
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, reason: "auth" };
+  }
 
   // Check stock before adding
   const { data: variant } = await supabase
@@ -106,7 +117,7 @@ export async function addToCart(variantId: string, quantity = 1) {
     .single();
 
   if (variant && variant.stock_quantity === 0) {
-    throw new Error("This variant is out of stock.");
+    return { success: false, reason: "stock" };
   }
 
   // If the same variant already exists in cart, increment quantity
@@ -125,17 +136,18 @@ export async function addToCart(variantId: string, quantity = 1) {
       .from("cart_items")
       .update({ quantity: safeQty })
       .eq("id", existing.id);
-    if (error) throw new Error(error.message);
+    if (error) return { success: false, reason: "error" };
   } else {
     const { error } = await supabase.from("cart_items").insert({
       user_id: user.id,
       variant_id: variantId,
       quantity,
     });
-    if (error) throw new Error(error.message);
+    if (error) return { success: false, reason: "error" };
   }
 
   revalidatePath("/cart");
+  return { success: true };
 }
 
 // Update cart item quantity, with the option to remove the item if quantity drops to 0. 

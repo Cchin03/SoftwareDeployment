@@ -28,22 +28,20 @@ export function AddToCartButton({ productPrice, matchedVariant }: Props) {
     if (!matchedVariant || outOfStock) return;
 
     startTransition(async () => {
-      try {
-        await addToCart(matchedVariant.id, quantity);
+      const result = await addToCart(matchedVariant.id, quantity);
+
+      if (result.reason === "auth") {
+        setFeedback("auth");
+      } else if (result.reason === "stock") {
+        setFeedback("stock");
+        setTimeout(() => setFeedback("idle"), 2500);
+      } else if (result.success) {
         setFeedback("success");
         setQuantity(1);
         setTimeout(() => setFeedback("idle"), 2500);
-      } catch (err: any) {
-        const msg = err?.message?.toLowerCase() ?? "";
-        if (msg.includes("logged in")) {
-          setFeedback("auth");
-        } else if (msg.includes("out of stock")) {
-          setFeedback("stock");
-          setTimeout(() => setFeedback("idle"), 2500);
-        } else {
-          setFeedback("error");
-          setTimeout(() => setFeedback("idle"), 2500);
-        }
+      } else {
+        setFeedback("error");
+        setTimeout(() => setFeedback("idle"), 2500);
       }
     });
   }
