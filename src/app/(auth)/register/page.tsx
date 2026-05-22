@@ -39,7 +39,6 @@ export default function RegisterPage() {
     await supabase.from('profiles').upsert({
       id: data.user.id,
       name: form.name,
-      age: parseInt(form.age),
     })
 
     if (data.session) {
