@@ -3,10 +3,11 @@ import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Sidebar from '@/components/sidebar'
 import ProductsTable from '@/components/productsTable'
-import type { AdminOrder, AdminOrderItem } from '@/lib/supabase/types'
+import type { AdminOrder, AdminOrderItem, EditingProduct } from '@/lib/supabase/types'
 
 type DashProduct = {
   id: string
+  category_id: string
   name: string
   brand: string | null
   price: number
@@ -130,7 +131,7 @@ export default function AdminDashboard() {
   const [showAddProduct, setShowAddProduct] = useState(false)
   const [newProduct, setNewProduct] = useState({ name: '', price: '', brand: '' })
   const [saving, setSaving] = useState(false)
-  const [editingProduct, setEditingProduct] = useState<DashProduct | null>(null)
+  const [editingProduct, setEditingProduct] = useState<EditingProduct | null>(null)
 
   // Order modals
   const [editingOrder, setEditingOrder] = useState<AdminOrder | null>(null)
@@ -166,6 +167,7 @@ export default function AdminDashboard() {
       .from('products')
       .select(`
         id,
+        category_id,
         name,
         brand,
         price,
@@ -176,9 +178,11 @@ export default function AdminDashboard() {
         product_variants ( stock_quantity )
       `)
       .order('name')
+      console.log('raw product row:', data?.[0]) // ← add this
 
     const formatted: DashProduct[] = (data ?? []).map((p: any) => ({
       id: p.id,
+      category_id: p.category_id,
       name: p.name,
       brand: p.brand ?? null,
       price: parseFloat(p.price) || 0,
@@ -336,23 +340,44 @@ export default function AdminDashboard() {
 
   // Edit product with inline form
   const saveEditProduct = async () => {
-    if (!editingProduct) return
-    setSaving(true)
-    const { error } = await supabase
-      .from('products')
-      .update({ name: editingProduct.name, price: editingProduct.price, brand: editingProduct.brand })
-      .eq('id', editingProduct.id)
+  if (!editingProduct) return
+  const price = parseFloat(editingProduct.price)
+  if (isNaN(price)) { alert('Please enter a valid price.'); return }
+
+  // DEBUG — check these values in your browser console
+  console.log('Updating product:', {
+    id: editingProduct.id,
+    category_id: editingProduct.category_id,
+    price: String(price),
+    name: editingProduct.name,
+  })
+
+  setSaving(true)
+  const { data, error } = await supabase
+    .from('products')
+    .update({ name: editingProduct.name, price: String(price), brand: editingProduct.brand })
+    .eq('id', editingProduct.id)
+    .eq('category_id', editingProduct.category_id)
+    .select()  // forces Supabase to return what it matched
+
+    console.log('Update result:', { data, error })
     setSaving(false)
-    // If error, show it. Otherwise refresh products, close edit form, and show success toast
     if (error) { showToast('Error updating product'); return }
+    if (!data || data.length === 0) { showToast('No rows matched — check id/category_id'); return }
     await fetchProducts()
     setEditingProduct(null)
     showToast('Product updated')
   }
 
-  // Delete product with confirmation
+  // Delete product with confirmation — must remove variants first (foreign key constraint)
   const deleteProduct = async (id: string, name: string) => {
     if (!confirm(`Remove "${name}"?`)) return
+    // Delete child variants first to satisfy foreign key constraints
+    const { error: variantsError } = await supabase
+      .from('product_variants')
+      .delete()
+      .eq('product_id', id)
+    if (variantsError) { showToast('Error deleting product variants'); return }
     const { error } = await supabase.from('products').delete().eq('id', id)
     if (error) { showToast('Error deleting'); return }
     await fetchProducts()
@@ -532,7 +557,11 @@ export default function AdminDashboard() {
             <ProductsTable
               products={products}
               categories={categories}
-              onEdit={p => setEditingProduct({ ...p })}
+              onEdit={p => {
+                const full = products.find(prod => prod.id === p.id)
+                if (!full) return
+                setEditingProduct({ ...full, price: String(full.price) })
+              }}
               onDelete={deleteProduct}
               onAddNew={() => setShowAddProduct(true)}
             />
@@ -741,7 +770,7 @@ export default function AdminDashboard() {
               <input className={iCls} value={editingProduct.brand ?? ''} onChange={e => setEditingProduct(p => p ? { ...p, brand: e.target.value } : p)} />
             </MField>
             <MField label="Price (RM)">
-              <input className={iCls} type="number" value={editingProduct.price} onChange={e => setEditingProduct(p => p ? { ...p, price: parseFloat(e.target.value) } : p)} />
+              <input className={iCls} type="number" value={editingProduct.price} onChange={e => setEditingProduct(p => p ? { ...p, price: e.target.value } : p)} />
             </MField>
           </div>
           <MFooter onCancel={() => setEditingProduct(null)} onSave={saveEditProduct} label="Save Changes" saving={saving} />
