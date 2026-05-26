@@ -17,6 +17,7 @@ function LoginForm() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // Handle form submission to sign in user with email and password
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')

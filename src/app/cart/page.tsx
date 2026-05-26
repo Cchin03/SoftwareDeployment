@@ -5,10 +5,9 @@ import { getCartItems } from "@/lib/cartActions";
 import { CartClient } from "./cartClient";
 
 export default async function CartPage() {
+  // This is a server component that fetches the cart items and user session.
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user },} = await supabase.auth.getUser();
 
   // Redirect unauthenticated users to login
   if (!user) {

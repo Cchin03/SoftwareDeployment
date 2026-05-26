@@ -58,6 +58,7 @@ type DealState = {
   feedback: DealFeedback
 }
 
+// This is a client component that renders the main shop dashboard with hero, categories and flash deals sections. It also handles the add to cart interactions for the flash deals, including authentication checks and feedback states.
 export default function ShopDashboard() {
   const supabase = createClient()
   const router = useRouter()
@@ -86,7 +87,7 @@ export default function ShopDashboard() {
         setCartCount((data ?? []).reduce((sum, row) => sum + row.quantity, 0))
       }
 
-      // 2. Fetch the first available variant for each deal product
+      // Fetch the first available variant for each deal product
       await Promise.all(
         DEALS_CONFIG.map(async (deal) => {
           const { data } = await supabase
@@ -106,6 +107,7 @@ export default function ShopDashboard() {
     init()
   }, [])
 
+  // Handle add to cart click for a deal. If guest, show sign in modal. If logged in, attempt to add to cart and update feedback state accordingly.
   function handleCartClick(e: React.MouseEvent) {
     if (isGuest) {
       e.preventDefault()
@@ -113,15 +115,18 @@ export default function ShopDashboard() {
     }
   }
 
+  // This function handles adding a deal product to the cart. It checks if the user is a guest and shows the sign-in modal if so. If the user is logged in, it attempts to add the item to the cart using the variantId from state, and updates the feedback state based on the outcome (success, error, out of stock, or auth error).
   async function handleAddToCart(productId: string) {
     if (isGuest) {
       setShowModal(true)
       return
-    }
-
+    } 
+    
+    // Get the variantId for this deal from state. We set it to '' if out of stock, so we can use that to disable the button and show "Out of Stock" without needing an extra loading state for that.
     const { variantId } = dealStates[productId]
     if (!variantId) return  // out of stock or not loaded
 
+    // Set feedback to pending while we attempt to add to cart
     setDealState(productId, { feedback: 'pending' })
     try {
       await addToCart(variantId, 1)
@@ -130,9 +135,11 @@ export default function ShopDashboard() {
       setTimeout(() => setDealState(productId, { feedback: 'idle' }), 2500)
     } catch (err: any) {
       const msg = err?.message?.toLowerCase() ?? ''
+      // We can check the error message to determine the reason for failure and show appropriate feedback. In a real app, you would want to have more robust error handling and not rely on message strings, but this is just for demonstration.
       if (msg.includes('logged in')) {
         setDealState(productId, { feedback: 'auth' })
         setShowModal(true)
+        // Reset feedback to idle after showing modal so if they close it and are still a guest, they can click again to see the modal again.
       } else if (msg.includes('out of stock')) {
         setDealState(productId, { feedback: 'stock' })
         setTimeout(() => setDealState(productId, { feedback: 'idle' }), 2500)
@@ -146,6 +153,7 @@ export default function ShopDashboard() {
   return (
     <div className="min-h-screen bg-zinc-50 font-sans">
 
+      {/* Navbar */}
       <Navbar isGuest={isGuest} cartCount={cartCount} onCartClick={handleCartClick} />
 
       {/* ── Hero  */}

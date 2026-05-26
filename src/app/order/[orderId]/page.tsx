@@ -6,23 +6,28 @@ import PrintButton from "./printButton";
 
 type Props = { params: Promise<{ orderId: string }> };
 
+// This page shows the order confirmation details after an order is placed. It fetches the order and its items from the database using the orderId from the URL params, and displays a receipt-like summary of the order including delivery info, items ordered, payment method, and total amount. It also includes a print button to print the receipt.
 export default async function OrderConfirmationPage({ params }: Props) {
   const { orderId } = await params;
   const supabase = await createClient();
 
+  // Fetch the order details using the orderId from the URL params. If the order is not found or there's an error, show a 404 page.
   const { data: order, error } = await supabase
     .from("orders")
     .select("*")
     .eq("id", orderId)
     .single();
 
+  // If there's an error fetching the order or the order doesn't exist, show a 404 page. In a real app, you might want to handle different error cases (e.g. database error vs not found) differently, but for simplicity we'll just show not found for any error here.
   if (error || !order) notFound();
 
+  // Fetch the items for this order from the order_items table. We assume there's a foreign key relationship where order_items has an order_id column that references orders.id. In a real app, you would want to handle errors here as well, but for simplicity we'll just assume it works and return an empty array if there's an error.
   const { data: items } = await supabase
     .from("order_items")
     .select("*")
     .eq("order_id", orderId);
 
+  // Map the payment method to a user-friendly label. In a real app, you might want to have a more robust way of handling different payment methods and their labels, but for this example we'll just handle two cases.
   const paymentLabel = order.payment_method === "online_banking" ? "Online Banking" : "Cash on Delivery";
 
   return (

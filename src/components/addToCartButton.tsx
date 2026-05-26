@@ -11,6 +11,7 @@ type Props = {
   matchedVariant: ProductVariant | null;
 };
 
+// This component renders the "Add to Cart" button on the product page, along with a quantity selector and feedback messages. It handles adding the selected variant and quantity to the cart, and provides user feedback for different scenarios (success, error, out of stock, authentication required). If the user is not authenticated, it prompts them to sign in or register, and redirects back to the current product page after login/registration.
 export function AddToCartButton({ productPrice, matchedVariant }: Props) {
   const router = useRouter();
   const pathname = usePathname(); // current product page URL e.g. /product/fashion/nike-air-force-1
@@ -24,9 +25,11 @@ export function AddToCartButton({ productPrice, matchedVariant }: Props) {
   const isLowStock = matchedVariant && matchedVariant.stock_quantity > 0 && matchedVariant.stock_quantity <= 3;
   const noMatch = matchedVariant === null;
 
+  // Handle adding the item to cart. If not authenticated, set feedback to "auth" to show the auth prompt. If out of stock, set feedback to "stock". If successful, set feedback to "success". If there's an error, set feedback to "error". In all cases except auth, reset feedback to "idle" after 2.5 seconds.
   function handleAddToCart() {
     if (!matchedVariant || outOfStock) return;
 
+    // Use startTransition to avoid blocking the UI while we wait for the addToCart action to complete. This allows us to show immediate feedback (e.g. disable button, show loading state) without waiting for the async operation to finish. The addToCart function will return an object indicating success or the reason for failure, which we use to set the appropriate feedback state.
     startTransition(async () => {
       const result = await addToCart(matchedVariant.id, quantity);
 

@@ -1,11 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server"; // adjust to your server.ts path
-
-// cart_items: id, user_id, variant_id, quantity, created_at
-// product_variants: id, product_id, category_id, size, colour, pattern, stock_quantity
-// products: id, category_id, name, brand, price, style, description, image, tag, rating, reviews
+import { createClient } from "@/lib/supabase/server";
 
 export type CartItem = {
   id: string;             
@@ -17,8 +13,7 @@ export type CartItem = {
   size: string | null;
   colour: string | null;
   pattern: string | null;
-  stock_quantity: number; // so UI can warn if stock is low
-
+  stock_quantity: number; 
   product_name: string;  
   brand: string;          
   price: number;          

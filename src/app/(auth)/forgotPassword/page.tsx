@@ -10,11 +10,13 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // Handle form submission to send password reset email
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
 
+    // Send password reset email with redirect to callback route
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/api/auth/callback`,
     })

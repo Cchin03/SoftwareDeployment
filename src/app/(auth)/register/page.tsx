@@ -13,6 +13,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
 
+  // Handle form submission to sign up user with email and password, then create profile with name/age
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')

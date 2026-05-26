@@ -27,14 +27,17 @@ export default function ResetPasswordPage() {
     })
   }, [supabase])
 
+  // Handle form submission to update password for logged in user after clicking reset link in email
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
+    // Basic client-side validation
     if (password !== confirm) {
       setError('Passwords do not match.')
       return
     }
+    // Supabase requires a minimum password length of 6 characters
     if (password.length < 6) {
       setError('Password must be at least 6 characters.')
       return

@@ -7,10 +7,10 @@ import { CartItem } from "@/lib/cartActions";
 
 type Props = {
   initialItems: CartItem[];
-  /** Pass the last-visited category id so the back button can go there directly.
-   *  e.g. read from a cookie / localStorage in the parent server component, or
-   *  derive from the first cart item's category_id if your CartItem has it.
-   *  Falls back to "/" if omitted. */
+  // Pass the last-visited category id so the back button can go there directly.
+  //  *  e.g. read from a cookie / localStorage in the parent server component, or
+  //  *  derive from the first cart item's category_id if your CartItem has it.
+  //  *  Falls back to "/" if omitted.
   backHref?: string;
 };
 
@@ -150,7 +150,6 @@ export function CartClient({ initialItems, backHref = "/" }: Props) {
   );
 }
 
-// Sub-components
 type CartRowProps = {
   item: CartItem;
   isPending: boolean;

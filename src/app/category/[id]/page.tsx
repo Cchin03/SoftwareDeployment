@@ -18,6 +18,8 @@ import {
   type SortOption,
 } from "@/lib/productData";
 
+// Sort products based on selected option. For simplicity we sort on the client here, 
+// but for large catalogs you would want to do this server-side or in your database query.
 function sortProducts(products: Product[], sort: SortOption) {
   const nextProducts = [...products];
   switch (sort) {
@@ -42,7 +44,6 @@ export default function CategoryPage() {
   const router = useRouter();
   const id = params?.id ?? "";
   const category = getCategoryById(id);
-
   const [sort, setSort] = useState<SortOption>("Featured");
   const [search, setSearch] = useState("");
   const [isGuest, setIsGuest] = useState(true);
@@ -67,6 +68,7 @@ export default function CategoryPage() {
     init();
   }, []);
 
+  // Handle cart icon click - redirect guests to login, otherwise go to cart page
   function handleCartClick(e: React.MouseEvent) {
     if (isGuest) {
       e.preventDefault();
@@ -74,6 +76,7 @@ export default function CategoryPage() {
     }
   }
 
+  // Filter and sort products based on search and selected sort option. Memoize for performance optimization.
   const filteredProducts = useMemo(() => {
     if (!category) return [];
     const matching = category.products.filter((p) =>

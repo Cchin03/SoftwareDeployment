@@ -13,9 +13,9 @@ type ProductPageProps = {
   }>;
 };
 
+// This page shows the details of a specific product. It fetches the product and its variants from the database using the categoryId and productId from the URL params, and displays the product information along with options to select variants and add to cart.
 export default async function ProductPage({ params }: ProductPageProps) {
   const { categoryId, productId } = await params;
-
   const category = getCategoryById(categoryId);
   const product = getProductById(categoryId, productId);
 
@@ -87,6 +87,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </nav>
         </div>
 
+        {/* Product Detail View */}
         <ProductDetailView
           category={category}
           product={product}

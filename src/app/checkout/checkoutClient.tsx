@@ -46,6 +46,7 @@ function validatePhone(countryCode: string, number: string): string | null {
     "+91":  { min: 10, max: 10 }, // India
   };
 
+  // If country code is recognized, validate against its specific rules. Otherwise, use a general rule of 7–15 digits.
   const rule = rules[countryCode];
   if (rule) {
     if (digits.length < rule.min || digits.length > rule.max) {
@@ -84,6 +85,7 @@ function blockNonPhone(e: React.KeyboardEvent<HTMLInputElement>) {
   if (!/^[0-9]$/.test(e.key)) e.preventDefault(); // digits only
 }
 
+// Input field CSS classes with error state
 type Props = {
   items: CartItemExpanded[];
   userEmail: string;
@@ -97,6 +99,7 @@ export default function CheckoutClient({ items, userEmail, defaultName }: Props)
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<string, string>>>({});
 
+  // Form state with default values. For simplicity we keep all form data in a single state object, but you could split into multiple states if preferred.
   const [form, setForm] = useState({
     recipientName: defaultName,
     senderName: defaultName,
@@ -107,19 +110,23 @@ export default function CheckoutClient({ items, userEmail, defaultName }: Props)
     paymentMethod: "cash" as "cash" | "online_banking",
   });
 
+  // Calculate total price and quantity from cart items
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const totalQty = items.reduce((sum, i) => sum + i.quantity, 0);
 
+  // Update form state and clear field error for the specific field on change. We also have specialized handlers for text and phone inputs to apply sanitization and formatting rules.
   function update(field: keyof typeof form, value: string) {
     setForm((f) => ({ ...f, [field]: value }));
     // Clear field error on change
     setFieldErrors((e) => ({ ...e, [field]: undefined }));
   }
 
+  // Handle text input changes with sanitization
   function handleTextChange(field: keyof typeof form, value: string) {
     update(field, sanitizeText(value));
   }
 
+  // Handle phone input changes with sanitization for display and validation
   function handlePhoneChange(field: "whatsapp", value: string) {
     update(field, sanitizePhoneDisplay(value));
   }
@@ -132,6 +139,7 @@ export default function CheckoutClient({ items, userEmail, defaultName }: Props)
     if (!form.city.trim()) errors.city = "City is required.";
     if (!form.address.trim()) errors.address = "Address is required.";
 
+    // Validate WhatsApp number with country-specific rules
     const waError = validatePhone(form.whatsappCountry, form.whatsapp);
     if (waError) errors.whatsapp = waError;
 

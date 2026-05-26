@@ -15,7 +15,7 @@ import type { ProductVariant } from "@/lib/supabase/types";
 type ProductDetailViewProps = {
   category: Category;
   product: Product;
-  variants: ProductVariant[]; // fetched in page.tsx, passed down here
+  variants: ProductVariant[];
 };
 
 type SelectorGroupProps = {

@@ -16,12 +16,14 @@ export type Product = {
 
 type StockStatus = 'In Stock' | 'Low Stock' | 'Out of Stock'
 
+// Determine stock status based on quantity. >10 = In Stock, 1-10 = Low Stock, 0 = Out of Stock
 function stockStatus(stock: number): StockStatus {
   if (stock > 10) return 'In Stock'
   if (stock > 0)  return 'Low Stock'
   return 'Out of Stock'
 }
 
+// Define badge styles for each stock status
 const stockBadge: Record<StockStatus, string> = {
   'In Stock': 'bg-emerald-50 text-emerald-700 ring-emerald-200',
   'Low Stock': 'bg-amber-50 text-amber-700 ring-amber-200',
@@ -38,6 +40,7 @@ type Props = {
   onAddNew: () => void
 }
 
+// This component renders a table of products with pagination and category filtering. It receives the list of products and categories as props, along with callback functions for editing, deleting, and adding products. The user can filter products by category using the chips at the top, and navigate through pages using the pagination controls at the bottom. Each product row displays the product information along with action buttons for editing and deleting the product.
 export default function ProductsTable({ products, categories, onEdit, onDelete, onAddNew }: Props) {
   const [catFilter, setCatFilter] = useState('all')
   const [page, setPage] = useState(1)
@@ -216,10 +219,10 @@ export default function ProductsTable({ products, categories, onEdit, onDelete, 
   )
 }
 
-/* ── Small helpers ── */
+// Helper components
 function ActionBtn({ variant, onClick }: { variant: 'edit' | 'delete'; onClick: () => void }) {
   const styles = {
-    edit:   { bg: '#eff6ff', hoverBg: '#dbeafe', color: '#1d4ed8', label: '✏️' },
+    edit: { bg: '#eff6ff', hoverBg: '#dbeafe', color: '#1d4ed8', label: '✏️' },
     delete: { bg: '#fef2f2', hoverBg: '#fee2e2', color: '#dc2626', label: '🗑️' },
   }[variant]
 
@@ -236,6 +239,7 @@ function ActionBtn({ variant, onClick }: { variant: 'edit' | 'delete'; onClick: 
   )
 }
 
+// Pagination button component. It renders a page number or an arrow, and applies different styles based on whether it's active (current page) or disabled (prev/next buttons on first/last page). It also has hover effects for better UX. The label prop determines what is displayed inside the button (e.g. page number, "←", "→"). The onClick prop is called when the button is clicked, allowing the parent component to update the current page state accordingly.
 function PagBtn({ onClick, disabled, active, label }: {
   onClick: () => void
   disabled?: boolean

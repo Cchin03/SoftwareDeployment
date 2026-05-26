@@ -30,6 +30,7 @@ function getOrderBadge(status: string) {
   return map[status?.toLowerCase()] ?? 'bg-slate-50 text-slate-600 ring-slate-200'
 }
 
+// build WhatsApp message URL for order receipt/status update, with dynamic content and status-specific messages
 function buildWaUrl(o: AdminOrder, items: AdminOrderItem[]): string {
   const itemLines = items.length
     ? items
@@ -39,6 +40,7 @@ function buildWaUrl(o: AdminOrder, items: AdminOrderItem[]): string {
         .join('\n')
     : `${o.items} item(s)`
 
+  // Translate payment method to user-friendly label
   const paymentLabel =
     o.payment_method === 'online_banking' ? 'Online Banking' : 'Cash on Delivery'
 
@@ -75,6 +77,7 @@ function buildWaUrl(o: AdminOrder, items: AdminOrderItem[]): string {
       `Your order has been received and is awaiting processing. Thank you for your patience! 🙏\n`
   }
 
+  // Encode the entire message for URL, using WhatsApp's formatting (line breaks, bold, etc.)
   const msg = encodeURIComponent(
     `*Order Receipt & Status Update*\n` +
     `━━━━━━━━━━━━━━━━\n` +
@@ -94,6 +97,7 @@ function buildWaUrl(o: AdminOrder, items: AdminOrderItem[]): string {
     statusBlock
   )
 
+  // Clean the WhatsApp number to digits only, and construct the wa.me URL with the encoded message
   const clean = (o.whatsapp ?? '').replace(/\D/g, '')
   return `https://wa.me/${clean}?text=${msg}`
 }
@@ -103,18 +107,17 @@ function buildWaUrl(o: AdminOrder, items: AdminOrderItem[]): string {
 // Admin Dashboard page
 export default function AdminDashboard() {
   const supabase = createClient()
-
   const [products, setProducts] = useState<DashProduct[]>([])
   const [orders, setOrders] = useState<AdminOrder[]>([])
   const [loading, setLoading] = useState(true)
   const [categories, setCategories] = useState<string[]>([])
   const [orderFilter, setOrderFilter] = useState('All Orders')
   const [toast, setToast] = useState('')
-  // temporary random metrics for demo purposes
+  // Server Performance metrics
   const [metrics, setMetrics] = useState([
     { label: 'LCP', value: 0, sub: 'Largest Contentful Paint', color: '#3b82f6', bar: 'linear-gradient(90deg,#3b82f6,#6366f1)' },
-    { label: 'FID', value: 0, sub: 'First Input Delay (ms)',   color: '#10b981', bar: 'linear-gradient(90deg,#10b981,#06b6d4)' },
-    { label: 'CLS', value: 0, sub: 'Cumulative Layout Shift',  color: '#f59e0b', bar: 'linear-gradient(90deg,#f59e0b,#ef4444)' },
+    { label: 'FID', value: 0, sub: 'First Input Delay (ms)', color: '#10b981', bar: 'linear-gradient(90deg,#10b981,#06b6d4)' },
+    { label: 'CLS', value: 0, sub: 'Cumulative Layout Shift', color: '#f59e0b', bar: 'linear-gradient(90deg,#f59e0b,#ef4444)' },
     { label: 'TTFB', value: 0, sub: 'Time to First Byte (ms)', color: '#8b5cf6', bar: 'linear-gradient(90deg,#8b5cf6,#ec4899)' },
   ])  
   const [lastChecked, setLastChecked] = useState('Just now')
@@ -142,9 +145,9 @@ export default function AdminDashboard() {
 
   // Service status (real checks)
   const [services, setServices] = useState([
-    { name: 'Web Server',          online: false, status: 'Checking…' },
+    { name: 'Web Server', online: false, status: 'Checking…' },
     { name: 'Database (Supabase)', online: false, status: 'Checking…' },
-    { name: 'CDN / Storage',       online: false, status: 'Checking…' },
+    { name: 'CDN / Storage', online: false, status: 'Checking…' },
   ])
 
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
@@ -180,6 +183,7 @@ export default function AdminDashboard() {
       .order('name')
       console.log('raw product row:', data?.[0]) // ← add this
 
+    // Format products with category name and total stock (summing variants), and handle missing/optional fields gracefully
     const formatted: DashProduct[] = (data ?? []).map((p: any) => ({
       id: p.id,
       category_id: p.category_id,
@@ -206,6 +210,7 @@ export default function AdminDashboard() {
       .select('id, status, total, date, city, address, items, created_at, whatsapp, phone, customer, sender_name, payment_method')
       .order('created_at', { ascending: false })
 
+    // Format orders and handle missing/optional fields gracefully
     const formatted: AdminOrder[] = (data ?? []).map((o: any) => ({
       id: o.id,
       status: o.status ?? 'Pending',
@@ -223,6 +228,7 @@ export default function AdminDashboard() {
     }))
 
     setOrders(formatted)
+    // Calculate total revenue and order count for stats
     setTotalOrderCount(formatted.length)
 
     const revenue = formatted
@@ -307,7 +313,7 @@ export default function AdminDashboard() {
         `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/`,
         { method: 'GET', cache: 'no-store' }
       ).then(r => r.status < 500).catch(() => false)
-
+      
       setServices([
         { name: 'Web Server', online: webOk, status: webOk ? 'Online' : 'Offline' },
         { name: 'Database (Supabase)', online: dbOk,  status: dbOk  ? 'Online' : 'Offline' },
@@ -352,6 +358,7 @@ export default function AdminDashboard() {
     name: editingProduct.name,
   })
 
+  // Set saving state to disable form and show loading indicator while we wait for the update to complete
   setSaving(true)
   const { data, error } = await supabase
     .from('products')
@@ -404,6 +411,7 @@ export default function AdminDashboard() {
     showToast('Order updated')
   }
 
+  // Cancel order (set status to "Cancelled") with confirmation
   const cancelOrder = async (orderId: string) => {
     if (!confirm(`Cancel order ${orderId}?`)) return
     const { error } = await supabase.from('orders').update({ status: 'Cancelled' }).eq('id', orderId)
@@ -412,6 +420,7 @@ export default function AdminDashboard() {
     showToast(`Order ${orderId} cancelled`)
   }
 
+  // Delete order (permanently) with confirmation
   const deleteOrder = async (orderId: string) => {
     if (!confirm(`Permanently delete cancelled order ${orderId}? This cannot be undone.`)) return
     // delete order items first (foreign key constraint)
@@ -426,7 +435,7 @@ export default function AdminDashboard() {
       return
     }
 
-    console.log(`deleteOrder: removed ${count} order_items for ${orderId}`)
+    // console.log(`deleteOrder: removed ${count} order_items for ${orderId}`)
 
     // delete the order now that children are gone
     const { error: orderError } = await supabase
@@ -441,6 +450,7 @@ export default function AdminDashboard() {
     }
 
     await fetchOrders()
+    // If the deleted order was the one currently being edited, close the edit form
     showToast(`Order ${orderId} deleted`)
   }
 
