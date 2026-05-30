@@ -181,7 +181,7 @@ export default function AdminDashboard() {
         product_variants ( stock_quantity )
       `)
       .order('name')
-      console.log('raw product row:', data?.[0]) // ← add this
+      console.log('raw product row:', data?.[0]) 
 
     // Format products with category name and total stock (summing variants), and handle missing/optional fields gracefully
     const formatted: DashProduct[] = (data ?? []).map((p: any) => ({
@@ -396,7 +396,7 @@ export default function AdminDashboard() {
     setEditingOrder(o)
     setEditOrderForm({ status: o.status, address: o.address ?? '', note: '' })
   }
-  // Save order edits (status and address for now, note is just internal and not saved to DB)
+  // Save order edits
   const saveOrder = async () => {
     if (!editingOrder) return
     setSaving(true)

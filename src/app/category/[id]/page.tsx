@@ -73,7 +73,7 @@ export default function CategoryPage() {
     if (isGuest) {
       e.preventDefault();
       router.push("/login?next=/cart");
-    }
+    } 
   }
 
   // Filter and sort products based on search and selected sort option. Memoize for performance optimization.
