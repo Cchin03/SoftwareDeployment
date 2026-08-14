@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCart } from "@/hooks/useCart";
+import { useCart } from "@/lib/hooks/useCart";
 import { CartItem } from "@/lib/cartActions";
 
 type Props = {

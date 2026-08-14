@@ -23,7 +23,7 @@ function cartReducer(state: CartItem[], action: CartAction): CartItem[] {
     // If it does, we update the quantity. Otherwise, we add it as a new item.
     case "ADD": {
       const existing = state.find((i) => i.variant_id === action.item.variant_id);
-      if (existing) {
+      if (existing) { 
         return state.map((i) =>
           i.variant_id === action.item.variant_id
             ? { ...i, quantity: i.quantity + action.item.quantity }

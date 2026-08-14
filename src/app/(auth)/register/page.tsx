@@ -13,7 +13,10 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
 
-  // Handle form submission to sign up user with email and password, then create profile with name/age
+  // Handle form submission to sign up user with email and password.
+  // The profile row (id, name) is created automatically by a DB trigger
+  // on auth.users, so we don't need to (and can't reliably) insert it
+  // from the client — see create_profile_trigger.sql.
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -28,6 +31,11 @@ export default function RegisterPage() {
     const { data, error } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
+      options: {
+        // Passed through to the DB trigger via raw_user_meta_data,
+        // so the profile row gets the name at creation time.
+        data: { name: form.name },
+      },
     })
 
     if (error || !data.user) {
@@ -36,11 +44,10 @@ export default function RegisterPage() {
       return
     }
 
-    // upsert ensures name/age are saved even if the trigger hasn't fired yet
-    await supabase.from('profiles').upsert({
-      id: data.user.id,
-      name: form.name,
-    })
+    // NOTE: `age` is collected in this form but there's currently no
+    // `age` column on public.profiles, so it isn't persisted anywhere.
+    // Add the column (and include it in the trigger / a follow-up
+    // update call) if you want to start storing it.
 
     if (data.session) {
       // Email confirmation is OFF — user is logged in immediately
@@ -150,7 +157,7 @@ export default function RegisterPage() {
               <input
                 type="email"
                 placeholder="you@example.com"
-                required
+                required 
                 onChange={e => setForm({ ...form, email: e.target.value })}
                 className="w-full h-11 px-4 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 bg-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition"
               />

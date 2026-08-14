@@ -88,6 +88,27 @@ export async function getCartItems(): Promise<CartItem[]> {
   });
 }
 
+// Get the total item count in the user's cart (sum of quantities, not row count),
+// for use in the navbar badge. Returns 0 for guests or on error rather than throwing,
+// since a failed count shouldn't break the page.
+export async function getCartCount(): Promise<number> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return 0;
+
+  const { data, error } = await supabase
+    .from("cart_items")
+    .select("quantity")
+    .eq("user_id", user.id);
+
+  if (error || !data) return 0;
+
+  return data.reduce((sum, row) => sum + row.quantity, 0);
+}
+
 export type CartActionResult = {
   success: boolean;
   reason?: "auth" | "stock" | "error";

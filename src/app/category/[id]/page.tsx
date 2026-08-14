@@ -17,6 +17,8 @@ import {
   type Product,
   type SortOption,
 } from "@/lib/productData";
+import { useCurrentUser } from "@/lib/hooks/currentUser";
+import { addToCart, getCartCount } from '@/lib/cartActions'
 
 // Sort products based on selected option. For simplicity we sort on the client here, 
 // but for large catalogs you would want to do this server-side or in your database query.
@@ -46,27 +48,20 @@ export default function CategoryPage() {
   const category = getCategoryById(id);
   const [sort, setSort] = useState<SortOption>("Featured");
   const [search, setSearch] = useState("");
-  const [isGuest, setIsGuest] = useState(true);
   const [cartCount, setCartCount] = useState(0);
+  const { user, loading } = useCurrentUser()
+  const isGuest = !loading && !user
 
   const supabase = createClient();
 
-  useEffect(() => {
-    async function init() {
-      const { data: { user } } = await supabase.auth.getUser();
-      setIsGuest(!user);
-
-      if (user) {
-        const { data } = await supabase
-          .from("cart_items")
-          .select("quantity")
-          .eq("user_id", user.id);
-        const total = (data ?? []).reduce((sum, row) => sum + row.quantity, 0);
-        setCartCount(total);
+    useEffect(() => {
+      if (loading) return
+      if (isGuest) {
+        setCartCount(0)
+        return
       }
-    }
-    init();
-  }, []);
+      getCartCount().then(setCartCount)
+   }, [loading, isGuest])
 
   // Handle cart icon click - redirect guests to login, otherwise go to cart page
   function handleCartClick(e: React.MouseEvent) {
@@ -100,18 +95,15 @@ export default function CategoryPage() {
     <div className="min-h-screen bg-zinc-50 font-sans">
 
       {/* ── Shared Navbar ── */}
-      <Navbar
-        isGuest={isGuest}
-        cartCount={cartCount}
-        onCartClick={handleCartClick}
-      />
+      <Navbar showCart={true} showNavLinks={true} user={user} cartCount={cartCount} onCartClick={handleCartClick} />
+      
 
       {/* ── Breadcrumb + Back button ── */}
       <div className="mx-auto max-w-7xl px-4 pt-5 sm:px-6">
         <div className="flex items-center gap-4 mb-1">
           {/* Back button */}
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/")} 
             className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

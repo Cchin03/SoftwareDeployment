@@ -5,8 +5,9 @@ import { useState, useEffect, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { addToCart } from '@/lib/cartActions'
+import { addToCart, getCartCount } from '@/lib/cartActions'
 import Navbar from '@/components/navbar'
+import { useCurrentUser } from '@/lib/hooks/currentUser'
 
 const categories = [
   {
@@ -62,10 +63,11 @@ type DealState = {
 export default function ShopDashboard() {
   const supabase = createClient()
   const router = useRouter()
-  const [isGuest, setIsGuest] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [cartCount, setCartCount] = useState(0)
-
+  const { user, loading } = useCurrentUser()
+  const isGuest = !loading && !user
+  
   // Per-deal state: variantId + button feedback
   const [dealStates, setDealStates] = useState<Record<string, DealState>>(
     () => Object.fromEntries(DEALS_CONFIG.map(d => [d.productId, { variantId: null, feedback: 'idle' }]))
@@ -77,16 +79,6 @@ export default function ShopDashboard() {
 
   useEffect(() => {
     async function init() {
-      // 1. Auth check
-      const { data: { user } } = await supabase.auth.getUser()
-      const loggedIn = !!user && !user.is_anonymous
-      setIsGuest(!loggedIn)
-
-      if (loggedIn) {
-        const { data } = await supabase.from('cart_items').select('quantity').eq('user_id', user!.id)
-        setCartCount((data ?? []).reduce((sum, row) => sum + row.quantity, 0))
-      }
-
       // Fetch the first available variant for each deal product
       await Promise.all(
         DEALS_CONFIG.map(async (deal) => {
@@ -106,6 +98,17 @@ export default function ShopDashboard() {
     }
     init()
   }, [])
+
+  // Fetch the real cart count once we know whether the user is logged in.
+  // Guests always have 0; logged-in users get the sum of quantities from Supabase.
+  useEffect(() => {
+    if (loading) return
+    if (isGuest) {
+      setCartCount(0)
+      return
+    }
+    getCartCount().then(setCartCount)
+  }, [loading, isGuest])
 
   // Handle add to cart click for a deal. If guest, show sign in modal. If logged in, attempt to add to cart and update feedback state accordingly.
   function handleCartClick(e: React.MouseEvent) {
@@ -130,7 +133,9 @@ export default function ShopDashboard() {
     setDealState(productId, { feedback: 'pending' })
     try {
       await addToCart(variantId, 1)
-      setCartCount(c => c + 1)
+      // Refetch rather than incrementing locally by 1 — addToCart caps
+      // quantity at available stock, so the real delta may differ.
+      getCartCount().then(setCartCount)
       setDealState(productId, { feedback: 'success' })
       setTimeout(() => setDealState(productId, { feedback: 'idle' }), 2500)
     } catch (err: any) {
@@ -154,11 +159,11 @@ export default function ShopDashboard() {
     <div className="min-h-screen bg-zinc-50 font-sans">
 
       {/* Navbar */}
-      <Navbar isGuest={isGuest} cartCount={cartCount} onCartClick={handleCartClick} />
+      <Navbar showCart={true} showNavLinks={true} user={user} cartCount={cartCount} onCartClick={handleCartClick} />
 
       {/* ── Hero  */}
       <section className="bg-white border-b border-zinc-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-35 md:py-40">
           <div className="max-w-2xl">
             <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-full px-3 py-1 mb-4">
               New arrivals every week
@@ -170,9 +175,37 @@ export default function ShopDashboard() {
               Browse thousands of products across six curated categories. Fast shipping, easy returns.
             </p>
             <div className="flex items-center gap-3">
-              <Link href="/category/electronics" className="bg-zinc-900 text-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-zinc-700 transition-colors">
-                Shop now
+              <Link href="/category/electronics" >
+                <button
+                  className="relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-medium text-black transition duration-300 ease-out border-2 border-black rounded-full shadow-md group"
+                >
+                  <span
+                    className="absolute inset-0 flex items-center justify-center w-full h-full text-white duration-300 -translate-x-full bg-black group-hover:translate-x-0 ease"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      ></path>
+                    </svg>
+                  </span>
+                  <span
+                    className="absolute flex items-center justify-center w-full h-full text-black transition-all duration-300 transform group-hover:translate-x-full ease"
+                  >
+                    Explore
+                  </span>
+                  <span className="relative invisible">Explore</span>
+                </button>
               </Link>
+
               <Link href="#categories" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors flex items-center gap-1">
                 Browse categories
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -316,19 +349,21 @@ export default function ShopDashboard() {
       </section>
 
       {/* Banner */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
-        <div className="bg-zinc-900 rounded-3xl p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-3">
-              Free shipping on orders over RM 50
-            </h2>
-            <p className="text-zinc-400 text-base">Plus free 30-day returns on all orders. No questions asked.</p>
+      {isGuest &&
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+          <div className="bg-zinc-900 rounded-3xl p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-3">
+                Free shipping on orders over RM 50
+              </h2>
+              <p className="text-zinc-400 text-base">Plus free 30-day returns on all orders. No questions asked.</p>
+            </div>
+            <Link href="/register" className="shrink-0 bg-white text-zinc-900 font-bold px-8 py-4 rounded-2xl text-sm hover:bg-zinc-100 transition-colors whitespace-nowrap">
+              Create free account →
+            </Link>
           </div>
-          <Link href="/register" className="shrink-0 bg-white text-zinc-900 font-bold px-8 py-4 rounded-2xl text-sm hover:bg-zinc-100 transition-colors whitespace-nowrap">
-            Create free account →
-          </Link>
-        </div>
-      </section>
+        </section>
+      }
 
       {/*  Footer  */}
       <footer className="border-t border-zinc-200 bg-white">

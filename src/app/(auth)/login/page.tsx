@@ -16,7 +16,7 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-
+  
   // Handle form submission to sign in user with email and password
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,6 +40,8 @@ function LoginForm() {
     // Admin always goes to dashboard regardless of ?next=
     if (profile?.role === 'admin') {
       router.push('/admin/dashboard')
+      router.refresh()
+      setLoading(false)
       return
     }
 

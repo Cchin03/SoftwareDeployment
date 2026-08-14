@@ -120,6 +120,7 @@ export default function AdminDashboard() {
     { label: 'CLS', value: 0, sub: 'Cumulative Layout Shift', color: '#f59e0b', bar: 'linear-gradient(90deg,#f59e0b,#ef4444)' },
     { label: 'TTFB', value: 0, sub: 'Time to First Byte (ms)', color: '#8b5cf6', bar: 'linear-gradient(90deg,#8b5cf6,#ec4899)' },
   ])  
+
   const [lastChecked, setLastChecked] = useState('Just now')
   const [userName, setUserName] = useState('Admin')
   const [userEmail, setUserEmail] = useState('admin@shopkl.com')
@@ -157,7 +158,6 @@ export default function AdminDashboard() {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        setUserEmail(user.email ?? 'admin@shopkl.com')
         setUserName(user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'Admin')
       }
     }
@@ -239,12 +239,13 @@ export default function AdminDashboard() {
 
   // Fetch User Count
   const fetchUserCount = useCallback(async () => {
-    const { count } = await supabase
-      .from('profiles')
-      .select('*', { count: 'exact', head: true })
-    setTotalUserCount(count ?? 0)
+    const { data, error } = await supabase.rpc('get_registered_user_count')
+    if (error) {
+      console.error('Failed to fetch user count:', error)
+      return
+    }
+    setTotalUserCount(data ?? 0)
   }, [supabase])
-
   // Fetch Order Items (on demand, cached)
   const fetchOrderItems = useCallback(async (orderId: string) => {
     if (orderItemsMap[orderId]) return // already cached

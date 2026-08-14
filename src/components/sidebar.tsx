@@ -55,7 +55,7 @@ export default function Sidebar({ userName = 'Admin', userEmail = 'admin@shopkl.
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <span className="text-white font-bold text-sm tracking-wide whitespace-nowrap">ShopKL Admin</span>
+              <span className="text-white font-bold text-sm tracking-wide whitespace-nowrap">shop.io</span>
             </div>
           )}
         </div>

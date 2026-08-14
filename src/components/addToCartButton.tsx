@@ -14,7 +14,7 @@ type Props = {
 // This component renders the "Add to Cart" button on the product page, along with a quantity selector and feedback messages. It handles adding the selected variant and quantity to the cart, and provides user feedback for different scenarios (success, error, out of stock, authentication required). If the user is not authenticated, it prompts them to sign in or register, and redirects back to the current product page after login/registration.
 export function AddToCartButton({ productPrice, matchedVariant }: Props) {
   const router = useRouter();
-  const pathname = usePathname(); // current product page URL e.g. /product/fashion/nike-air-force-1
+  const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
   const [quantity, setQuantity] = useState(1);
   const [feedback, setFeedback] = useState<"idle" | "success" | "error" | "auth" | "stock">("idle");

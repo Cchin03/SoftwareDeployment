@@ -4,6 +4,7 @@ import { Geist_Mono } from 'next/font/google'
 import './globals.css' 
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import AutoLogoutWatcher from '@/components/autoLogoutWatcher'
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -34,6 +35,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
+        <AutoLogoutWatcher />
         <Analytics />        
         <SpeedInsights />   
       </body>
