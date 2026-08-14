@@ -18,7 +18,7 @@ export default async function CartPage() {
 
   const navbarUser = supabaseUser
     ? {
-        name: supabaseUser.user_metadata?.name ?? supabaseUser.email ?? 'User',
+        name: supabaseUser.user_metadata?.name ?? supabaseUser.email?.split('@')[0] ?? "User",
         email: supabaseUser.email ?? '',
       }
     : null;
