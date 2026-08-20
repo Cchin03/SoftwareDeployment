@@ -4,38 +4,31 @@
  * What we test:
  *  1. Unauthenticated users are redirected to /login?next=/cart
  *  2. Authenticated users are NOT redirected
- *  3. The page renders the site logo "shop.io"
- *  4. The signed-in user's email is displayed in the header
- *  5. CartClient is rendered with the items returned by getCartItems
- *  6. The header is sticky (has the correct sticky/z-50 classes)
- *  7. The logo links back to "/"
- *  8. The page wrapper has the expected background class (bg-zinc-50)
- *  9. getCartItems is called exactly once per render
- * 10. An empty cart (getCartItems returns []) still renders CartClient (not an error)
+ *  3. Navbar receives the correct derived user (name fallback + email)
+ *  4. Navbar is rendered with showCart={false} and showNavLinks={false}
+ *  5. The page renders the site logo "shop.io" (via Navbar)
+ *  6. The signed-in user's email is displayed in the header (via Navbar)
+ *  7. CartClient is rendered with the items returned by getCartItems
+ *  8. The header is sticky (has the correct sticky/z-50 classes)
+ *  9. The logo links back to "/"
+ * 10. The page wrapper has the expected background class (bg-zinc-50)
+ * 11. getCartItems is called exactly once per render
+ * 12. An empty cart (getCartItems returns []) still renders CartClient (not an error)
+ * 13. When the user has no user_metadata.name, the email prefix is used as the display name
+ * 14. When the user has a user_metadata.name, that name is used over the email prefix
  */
 
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
-// moCKS navigation and data fetching used by CartPage
+// Mocks navigation and data fetching used by CartPage
 const mockRedirect = jest.fn((url: string): never => {
   throw new Error(`NEXT_REDIRECT:${url}`);
 });
 jest.mock("next/navigation", () => ({
   redirect: (url: string) => mockRedirect(url),
 }));
-
-// Mocking next/link to avoid errors about <Link> not being wrapped in <NextRouter>. We can keep it simple since we're not testing Link's behavior here, just that the correct href is passed to it. The mock component renders an anchor tag with the given href and children, and forwards any additional props (e.g. onClick) so we can assert on them if needed.
-jest.mock("next/link", () => {
-  const Link = ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
-    <a href={href} {...rest}>
-      {children}
-    </a>
-  );
-  Link.displayName = "Link";
-  return Link;
-});
 
 // Mock supabase client and getUser to control authentication state in tests. By mocking getUser, we can simulate both authenticated and unauthenticated scenarios without relying on a real backend or session. This allows us to test the redirect behavior for unauthenticated users and the normal rendering for authenticated users in isolation.
 const mockGetUser = jest.fn();
@@ -53,7 +46,7 @@ jest.mock("@/lib/cartActions", () => ({
   getCartItems: () => mockGetCartItems(),
 }));
 
-//  mock CartClient 
+// Mock CartClient.
 // We keep it simple: render a div that exposes its props so we can assert on them.
 // Mock using the same path that page.tsx uses to import CartClient.
 // Using a relative "./cartClient" only works if this test file sits in the
@@ -64,10 +57,47 @@ jest.mock("@/app/cart/cartClient", () => ({
   ),
 }));
 
+// Mock Navbar. CartPage doesn't render its own header markup — it delegates
+// to Navbar, passing a derived `user` object plus `showCart` / `showNavLinks`
+// flags. We capture the props via a jest.fn() spy so tests can assert on
+// exactly what CartPage passed down, and we render a minimal header so the
+// existing DOM-based assertions (sticky classes, logo text/link, email) keep
+// working without depending on Navbar's real implementation.
+type NavbarUser = { name: string; email: string } | null;
+const mockNavbar = jest.fn(
+  ({
+    user,
+    showCart,
+    showNavLinks,
+  }: {
+    user: NavbarUser;
+    showCart: boolean;
+    showNavLinks: boolean;
+  }) => (
+    <header
+      className="sticky top-0 z-50"
+      data-show-cart={String(showCart)}
+      data-show-nav-links={String(showNavLinks)}
+    >
+      <a href="/">shop.io</a>
+      {user && <span>{user.email}</span>}
+    </header>
+  )
+);
+jest.mock("@/components/navbar", () => ({
+  __esModule: true,
+  default: (props: { user: NavbarUser; showCart: boolean; showNavLinks: boolean }) =>
+    mockNavbar(props),
+}));
+
 import CartPage from "@/app/cart/page";
 
 // fake user data for authenticated tests
-const fakeUser = { email: "alice@example.com", id: "user-1" };
+const fakeUser = {
+  email: "alice@example.com",
+  id: "user-1",
+  user_metadata: {} as Record<string, unknown>,
+};
 
 function setupAuth(user: typeof fakeUser | null) {
   mockGetUser.mockResolvedValue({ data: { user } });
@@ -84,7 +114,7 @@ beforeEach(() => {
   mockGetCartItems.mockResolvedValue([]);
 });
 
-// Unauthenticated redirect 
+// Unauthenticated redirect
 test("redirects unauthenticated users to /login?next=/cart", async () => {
   setupAuth(null);
 
@@ -92,7 +122,7 @@ test("redirects unauthenticated users to /login?next=/cart", async () => {
   expect(mockRedirect).toHaveBeenCalledWith("/login?next=/cart");
 });
 
-// No redirect for authenticated users 
+// No redirect for authenticated users
 test("does not redirect when user is authenticated", async () => {
   setupAuth(fakeUser);
 
@@ -100,7 +130,47 @@ test("does not redirect when user is authenticated", async () => {
   expect(mockRedirect).not.toHaveBeenCalled();
 });
 
-// Logo text 
+// Navbar receives the correctly derived user
+test("passes a derived user (email prefix as name fallback) to Navbar", async () => {
+  setupAuth(fakeUser);
+
+  await renderPage();
+
+  expect(mockNavbar).toHaveBeenCalledWith(
+    expect.objectContaining({
+      user: { name: "alice", email: fakeUser.email },
+    })
+  );
+});
+
+// Navbar name prefers user_metadata.name when present
+test("uses user_metadata.name for Navbar user when available", async () => {
+  setupAuth({
+    ...fakeUser,
+    user_metadata: { name: "Alice Smith" },
+  });
+
+  await renderPage();
+
+  expect(mockNavbar).toHaveBeenCalledWith(
+    expect.objectContaining({
+      user: { name: "Alice Smith", email: fakeUser.email },
+    })
+  );
+});
+
+// Navbar receives showCart={false} and showNavLinks={false}
+test("renders Navbar with showCart and showNavLinks disabled", async () => {
+  setupAuth(fakeUser);
+
+  await renderPage();
+
+  expect(mockNavbar).toHaveBeenCalledWith(
+    expect.objectContaining({ showCart: false, showNavLinks: false })
+  );
+});
+
+// Logo text
 test("renders shop.io logo text", async () => {
   setupAuth(fakeUser);
 
@@ -108,7 +178,7 @@ test("renders shop.io logo text", async () => {
   expect(screen.getByText(/shop/i)).toBeInTheDocument();
 });
 
-// User email in header 
+// User email in header
 test("displays signed-in user email in the header", async () => {
   setupAuth(fakeUser);
 
@@ -116,7 +186,7 @@ test("displays signed-in user email in the header", async () => {
   expect(screen.getByText(fakeUser.email)).toBeInTheDocument();
 });
 
-// CartClient receives items from getCartItems 
+// CartClient receives items from getCartItems
 test("passes items returned by getCartItems to CartClient", async () => {
   setupAuth(fakeUser);
   const fakeItems = [
@@ -141,7 +211,7 @@ test("header has sticky and z-50 classes", async () => {
   expect(header).toHaveClass("z-50");
 });
 
-// Logo links to "/" 
+// Logo links to "/"
 test("logo link points to /", async () => {
   setupAuth(fakeUser);
 
@@ -150,7 +220,7 @@ test("logo link points to /", async () => {
   expect(logoLink).toHaveAttribute("href", "/");
 });
 
-// Page background 
+// Page background
 test("page wrapper has bg-zinc-50 class", async () => {
   setupAuth(fakeUser);
 
@@ -159,7 +229,7 @@ test("page wrapper has bg-zinc-50 class", async () => {
   expect(wrapper).toHaveClass("bg-zinc-50");
 });
 
-// getCartItems called once 
+// getCartItems called once
 test("calls getCartItems exactly once", async () => {
   setupAuth(fakeUser);
 
@@ -167,7 +237,7 @@ test("calls getCartItems exactly once", async () => {
   expect(mockGetCartItems).toHaveBeenCalledTimes(1);
 });
 
-// Empty cart does not crash 
+// Empty cart does not crash
 test("renders CartClient even when cart is empty", async () => {
   setupAuth(fakeUser);
   mockGetCartItems.mockResolvedValue([]);

@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Navbar from "@/components/navbar";
 import { logout } from "@/lib/authActions";
@@ -27,15 +27,21 @@ jest.mock("@/lib/authActions", () => ({
   logout: jest.fn(),
 }));
 
-// Mutable mock for logout so we can assert on it in the interactions tests
+// Mutable mock for onCartClick so we can assert on it in the interactions tests
 const mockOnCartClick = jest.fn();
+
+// Navbar has no `isGuest` prop — guest status is derived internally from
+// `user` (`const isGuest = !user`). Authenticated rendering also depends on
+// `user.name` / `user.email`, so tests need a real user object rather than a
+// boolean flag.
+const authUser = { name: "Alice", email: "alice@example.com" };
 
 function renderNavbar(
   overrides: Partial<React.ComponentProps<typeof Navbar>> = {}
 ) {
   return render(
     <Navbar
-      isGuest={false}
+      user={authUser}
       cartCount={0}
       onCartClick={mockOnCartClick}
       {...overrides}
@@ -43,21 +49,25 @@ function renderNavbar(
   );
 }
 
-
 beforeEach(() => jest.clearAllMocks());
 
-// Tests for Navbar component 
+// Tests for Navbar component
 describe("Navbar — branding & structure", () => {
   it("renders the shop.io logo", () => {
     renderNavbar();
     expect(screen.getByText(/shop/i)).toBeInTheDocument();
   });
 
+  it("does not render the logo when showLogo is false", () => {
+    renderNavbar({ showLogo: false });
+    expect(screen.queryByText(/shop/i)).not.toBeInTheDocument();
+  });
+
   it("renders a link to the home page", () => {
     renderNavbar();
     // Use getAllByRole and check at least one points to "/"
     const homeLinks = screen.getAllByRole("link", { name: /home/i });
-    const homeNavLink = homeLinks.find(l => l.getAttribute("href") === "/");
+    const homeNavLink = homeLinks.find((l) => l.getAttribute("href") === "/");
     expect(homeNavLink).toBeInTheDocument();
   });
 
@@ -80,61 +90,76 @@ describe("Navbar — branding & structure", () => {
       "/category/beauty"
     );
   });
+
+  it("does not render nav links when showNavLinks is false", () => {
+    renderNavbar({ showNavLinks: false });
+    expect(screen.queryByRole("link", { name: /electronics/i })).not.toBeInTheDocument();
+  });
 });
 
-describe("Navbar — guest state", () => {
-  it("shows Sign in link when isGuest is true", () => {
-    renderNavbar({ isGuest: true });
+describe("Navbar — guest state (user is null)", () => {
+  it("shows Sign in link when user is null", () => {
+    renderNavbar({ user: null });
     expect(screen.getByRole("link", { name: /sign in/i })).toBeInTheDocument();
   });
 
-  it("shows Get started link when isGuest is true", () => {
-    renderNavbar({ isGuest: true });
+  it("shows Get started link when user is null", () => {
+    renderNavbar({ user: null });
     expect(screen.getByRole("link", { name: /get started/i })).toBeInTheDocument();
   });
 
-  it("does NOT show Logout button when isGuest is true", () => {
-    renderNavbar({ isGuest: true });
+  it("does NOT show Logout button when user is null", () => {
+    renderNavbar({ user: null });
     expect(screen.queryByRole("button", { name: /logout/i })).not.toBeInTheDocument();
   });
 
   it("cart link points to '#' for guest users", () => {
-    renderNavbar({ isGuest: true });
+    renderNavbar({ user: null });
     const cartLink = screen.getByTitle(/sign in to access cart/i);
     expect(cartLink).toHaveAttribute("href", "#");
   });
 
   it("shows lock emoji on cart for guest users", () => {
-    renderNavbar({ isGuest: true });
+    renderNavbar({ user: null });
     expect(screen.getByText("🔒")).toBeInTheDocument();
   });
 });
 
 describe("Navbar — authenticated state", () => {
-  it("shows Logout button when isGuest is false", () => {
-    renderNavbar({ isGuest: false });
+  it("shows Logout button when user is present", () => {
+    renderNavbar({ user: authUser });
     expect(screen.getByRole("button", { name: /logout/i })).toBeInTheDocument();
   });
 
   it("does NOT show Sign in link when authenticated", () => {
-    renderNavbar({ isGuest: false });
+    renderNavbar({ user: authUser });
     expect(screen.queryByRole("link", { name: /sign in/i })).not.toBeInTheDocument();
   });
 
   it("does NOT show Get started link when authenticated", () => {
-    renderNavbar({ isGuest: false });
+    renderNavbar({ user: authUser });
     expect(screen.queryByRole("link", { name: /get started/i })).not.toBeInTheDocument();
   });
 
   it("cart link points to /cart for authenticated users", () => {
-    renderNavbar({ isGuest: false });
-    const cartLink = screen.getByTitle(/cart/i);
+    renderNavbar({ user: authUser });
+    const cartLink = screen.getByTitle(/^cart$/i);
     expect(cartLink).toHaveAttribute("href", "/cart");
   });
 
   it("does NOT show lock emoji when authenticated", () => {
-    renderNavbar({ isGuest: false });
+    renderNavbar({ user: authUser });
     expect(screen.queryByText("🔒")).not.toBeInTheDocument();
+  });
+
+  it("displays the user's name", () => {
+    renderNavbar({ user: authUser });
+    expect(screen.getByText(authUser.name)).toBeInTheDocument();
+  });
+
+  it("displays the first letter of the user's name as the avatar initial", () => {
+    renderNavbar({ user: authUser });
+    expect(screen.getByText("A")).toBeInTheDocument();
   });
 });
 
@@ -163,19 +188,26 @@ describe("Navbar — cart badge", () => {
     renderNavbar({ cartCount: 99 });
     expect(screen.getByText("99")).toBeInTheDocument();
   });
+
+  it("does not render the cart icon at all when showCart is false", () => {
+    renderNavbar({ showCart: false, cartCount: 5 });
+    expect(screen.queryByText("5")).not.toBeInTheDocument();
+  });
 });
 
 describe("Navbar — interactions", () => {
   it("calls onCartClick when cart icon is clicked", async () => {
-    renderNavbar({ isGuest: false, cartCount: 3 });
-    const cartLink = screen.getByTitle(/cart/i);
+    renderNavbar({ user: authUser, cartCount: 3 });
+    const cartLink = screen.getByTitle(/^cart$/i);
     await userEvent.click(cartLink);
     expect(mockOnCartClick).toHaveBeenCalledTimes(1);
   });
 
   it("logout button is inside a form with the logout action", () => {
-    renderNavbar({ isGuest: false });
+    renderNavbar({ user: authUser });
     const logoutBtn = screen.getByRole("button", { name: /logout/i });
-    expect(logoutBtn.closest("form")).toBeInTheDocument();
+    const form = logoutBtn.closest("form");
+    expect(form).toBeInTheDocument();
+    expect(form).toHaveAttribute("action");
   });
-});
+}); 

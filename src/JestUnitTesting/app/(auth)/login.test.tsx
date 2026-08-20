@@ -182,13 +182,13 @@ describe('LoginPage — successful login', () => {
     await waitFor(() => expect(mockRefresh).toHaveBeenCalled())
   })
 
-  it('does NOT call router.refresh() after admin login', async () => {
+  it('also calls router.refresh() after a successful admin login', async () => {
     mockAuthSuccess('admin')
     render(<LoginPage />)
     await fillAndSubmit()
 
     await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/admin/dashboard'))
-    expect(mockRefresh).not.toHaveBeenCalled()
+    expect(mockRefresh).toHaveBeenCalled()
   })
 })
 

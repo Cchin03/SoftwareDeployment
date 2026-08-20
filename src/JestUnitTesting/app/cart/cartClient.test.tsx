@@ -36,7 +36,7 @@ jest.mock("next/link", () => {
 
 // Mock useCart hook to control the cart state during tests. By mocking this hook, we can simulate different cart states (empty, populated, low stock) and verify that the CartClient component renders the correct UI and calls the appropriate functions from the hook when user interactions occur (e.g. updating quantity, removing items, clearing cart). This allows us to test the CartClient component in isolation without relying on the actual implementation of the useCart hook or making real API calls.
 const mockUseCart = jest.fn();
-jest.mock("@/hooks/useCart", () => ({
+jest.mock("@/lib/hooks/useCart", () => ({
   useCart: (...args: unknown[]) => mockUseCart(...args),
 }));
 

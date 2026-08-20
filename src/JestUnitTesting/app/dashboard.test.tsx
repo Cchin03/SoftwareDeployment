@@ -56,18 +56,24 @@ jest.mock("@/components/navbar", () => {
 });
 
 const mockAddToCart = jest.fn();
+const mockGetCartCount = jest.fn();
 jest.mock("@/lib/cartActions", () => ({
   addToCart: (...args: unknown[]) => mockAddToCart(...args),
+  getCartCount: (...args: unknown[]) => mockGetCartCount(...args),
 }));
 
-// Supabase client mock — mutable per test
-const mockGetUser = jest.fn();
+// The component reads auth state from useCurrentUser(), not supabase.auth.getUser() directly.
+const mockUseCurrentUser = jest.fn();
+jest.mock("@/lib/hooks/currentUser", () => ({
+  useCurrentUser: () => mockUseCurrentUser(),
+}));
+
+// Supabase client mock — only used directly by the component for the product_variants lookup.
 const mockFrom = jest.fn();
 
 // Mocking next/link to avoid errors about <Link> not being wrapped in <NextRouter>. We can keep it simple since we're not testing Link's behavior here, just that the correct href is passed to it. The mock component renders an anchor tag with the given href and children, and forwards any additional props (e.g. onClick) so we can assert on them if needed.
 jest.mock("@/lib/supabase/client", () => ({
   createClient: jest.fn(() => ({
-    auth: { getUser: mockGetUser },
     from: mockFrom,
   })),
 }));
@@ -102,28 +108,22 @@ function setupVariantsOutOfStock() {
 }
 
 function setupGuestAuth() {
-  mockGetUser.mockResolvedValue({ data: { user: null } });
+  mockUseCurrentUser.mockReturnValue({ user: null, loading: false });
+  mockGetCartCount.mockResolvedValue(0);
   const { select } = setupVariants();
-  mockFrom.mockReturnValue({ select }); 
+  mockFrom.mockReturnValue({ select });
 }
 
 function setupUserAuth(cartQty = 0) {
-  mockGetUser.mockResolvedValue({
-    data: { user: { id: "user-1", is_anonymous: false } },
+  mockUseCurrentUser.mockReturnValue({
+    user: { id: "user-1", is_anonymous: false },
+    loading: false,
   });
+  mockGetCartCount.mockResolvedValue(cartQty);
 
-  // cart_items query for count + product_variants query
-  mockFrom.mockImplementation((table: string) => {
-    if (table === "cart_items") {
-      const eq = jest.fn().mockResolvedValue({
-        data: cartQty > 0 ? [{ quantity: cartQty }] : [],
-      });
-      const select = jest.fn().mockReturnValue({ eq });
-      return { select };
-    }
-    // product_variants
-    return { select: setupVariants().select };
-  });
+  // product_variants query only — cart count comes from getCartCount(), not a direct table query
+  const { select } = setupVariants();
+  mockFrom.mockReturnValue({ select });
 }
 
 // Reset mocks before each test and set up default guest auth and in-stock variants. Individual tests can override these defaults as needed (e.g. authenticated user, out-of-stock variants, etc.) to simulate different scenarios. This ensures each test starts with a clean slate and only the relevant conditions for that test are changed.
@@ -238,6 +238,8 @@ test("authenticated user sees 'Add to Cart' buttons after variants load", async 
 // 9. Authenticated: success flow 
 test("successful addToCart shows '✓ Added to cart!' and increments cart count", async () => {
   setupUserAuth(2);
+  // First call (on mount) resolves 2; second call (refetch after addToCart) resolves 3
+  mockGetCartCount.mockResolvedValueOnce(2).mockResolvedValueOnce(3);
   mockAddToCart.mockResolvedValue(undefined);
 
   await act(async () => { render(<ShopDashboard />); });
@@ -320,12 +322,12 @@ test("deal product links point to /product/:categoryId/:productId", async () => 
   expect(sonyLinks.length).toBeGreaterThan(0);
 });
 
-// 14. Hero "Shop now" link 
-test("hero 'Shop now' link points to /category/electronics", async () => {
+// 14. Hero "Explore" link 
+test("hero 'Explore' link points to /category/electronics", async () => {
   await act(async () => { render(<ShopDashboard />); });
 
-  const shopNow = screen.getByRole("link", { name: /shop now/i });
-  expect(shopNow).toHaveAttribute("href", "/category/electronics");
+  const exploreLink = screen.getByRole("link", { name: /explore/i });
+  expect(exploreLink).toHaveAttribute("href", "/category/electronics");
 });
 
 // 15. Footer links  

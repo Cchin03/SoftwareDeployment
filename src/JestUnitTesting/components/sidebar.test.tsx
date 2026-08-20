@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Sidebar from "@/components/sidebar";
 import { logout } from "@/lib/authActions";
@@ -18,14 +18,13 @@ function renderSidebar(
   return render(<Sidebar {...props} />);
 }
 
-
 beforeEach(() => jest.clearAllMocks());
 
 // Tests for Sidebar component
 describe("Sidebar — branding & structure", () => {
-  it("renders the ShopKL Admin brand name when open", () => {
+  it("renders the shop.io brand name when open", () => {
     renderSidebar();
-    expect(screen.getByText(/shopkl admin/i)).toBeInTheDocument();
+    expect(screen.getByText(/shop\.io/i)).toBeInTheDocument();
   });
 
   it("renders all 3 nav items", () => {
@@ -77,6 +76,7 @@ describe("Sidebar — profile card", () => {
   it("caps initials at 2 characters for long names", () => {
     renderSidebar({ userName: "Alice Bob Carol" });
     // Should be "AB", not "ABC"
+    expect(screen.getAllByText("AB").length).toBeGreaterThan(0);
     expect(screen.queryByText("ABC")).not.toBeInTheDocument();
   });
 
@@ -99,14 +99,14 @@ describe("Sidebar — profile card", () => {
 describe("Sidebar — toggle behaviour", () => {
   it("is open by default", () => {
     renderSidebar();
-    // Brand name visible = sidebar is open
-    expect(screen.getByText(/shopkl admin/i)).toBeInTheDocument();
+    // Brand label visible = sidebar is open
+    expect(screen.getByText(/shop\.io/i)).toBeInTheDocument();
   });
 
   it("hides brand label when toggled closed", async () => {
     renderSidebar();
     await userEvent.click(screen.getByRole("button", { name: /toggle sidebar/i }));
-    expect(screen.queryByText(/shopkl admin/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/shop\.io/i)).not.toBeInTheDocument();
   });
 
   it("hides nav item labels when closed", async () => {
@@ -128,16 +128,21 @@ describe("Sidebar — toggle behaviour", () => {
     const toggleBtn = screen.getByRole("button", { name: /toggle sidebar/i });
     await userEvent.click(toggleBtn); // close
     await userEvent.click(toggleBtn); // re-open
-    expect(screen.getByText(/shopkl admin/i)).toBeInTheDocument();
+    expect(screen.getByText(/shop\.io/i)).toBeInTheDocument();
   });
 
   it("shows title attribute on nav links when closed (tooltip fallback)", async () => {
     renderSidebar();
     await userEvent.click(screen.getByRole("button", { name: /toggle sidebar/i }));
-    // Remove the broken line: screen.getByRole("link", { name: "" }) — empty name won't work
     const allLinks = screen.getAllByRole("link");
     const hasTitles = allLinks.some((link) => link.getAttribute("title"));
     expect(hasTitles).toBe(true);
+  });
+
+  it("still shows the profile avatar (with title) when closed", async () => {
+    renderSidebar({ userName: "Alice Smith" });
+    await userEvent.click(screen.getByRole("button", { name: /toggle sidebar/i }));
+    expect(screen.getByTitle("Alice Smith")).toBeInTheDocument();
   });
 });
 

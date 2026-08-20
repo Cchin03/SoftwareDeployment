@@ -12,17 +12,20 @@ const user = userEvent.setup()
 // Mocks
 const mockPush = jest.fn()
 const mockSignUp = jest.fn()
-const mockUpsert = jest.fn()
 
 // Mock next/navigation to provide useRouter hook
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockPush }),
 }))
 
+// NOTE: RegisterPage only ever calls `supabase.auth.signUp(...)`. The
+// profile row (id, name) is created by a DB trigger on auth.users using
+// the `options.data.name` passed to signUp — the component deliberately
+// does NOT call `.from(...).upsert(...)` from the client (see the comment
+// above `handleRegister` in page.tsx), so there's nothing else to mock here.
 jest.mock('@/lib/supabase/client', () => ({
   createClient: () => ({
     auth: { signUp: mockSignUp },
-    from: () => ({ upsert: mockUpsert }),
   }),
 }))
 
@@ -179,29 +182,22 @@ describe('RegisterPage — successful registration (email confirmation OFF)', ()
       data: { user: { id: 'new-user-id' }, session: { access_token: 'tok' } },
       error: null,
     })
-    mockUpsert.mockResolvedValue({ error: null })
   })
 
-  it('calls supabase.auth.signUp with email and password', async () => {
+  it('calls supabase.auth.signUp with email, password, and the name in options.data', async () => {
     render(<RegisterPage />)
     await fillForm()
     await user.click(screen.getByRole('button', { name: /create account/i }))
 
+    // The name is passed via `options.data.name` so the DB trigger that
+    // creates the profile row can read it from raw_user_meta_data — it is
+    // NOT a separate top-level field.
     await waitFor(() =>
       expect(mockSignUp).toHaveBeenCalledWith({
         email: 'jane@example.com',
         password: 'Password1!',
+        options: { data: { name: 'Jane Doe' } },
       })
-    )
-  })
-
-  it('upserts the profile with the user id and name', async () => {
-    render(<RegisterPage />)
-    await fillForm({ name: 'Jane Doe' })
-    await user.click(screen.getByRole('button', { name: /create account/i }))
-
-    await waitFor(() =>
-      expect(mockUpsert).toHaveBeenCalledWith({ id: 'new-user-id', name: 'Jane Doe' })
     )
   })
 
@@ -220,7 +216,6 @@ describe('RegisterPage — successful registration (email confirmation ON)', () 
       data: { user: { id: 'new-user-id' }, session: null },
       error: null,
     })
-    mockUpsert.mockResolvedValue({ error: null })
 
     render(<RegisterPage />)
     await fillForm()

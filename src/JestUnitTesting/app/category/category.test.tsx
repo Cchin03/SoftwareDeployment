@@ -1,4 +1,6 @@
-/** 
+/**
+ * Tests for CategoryPage
+ *
  * What we test:
  *  1.  Unknown category ID → shows "Category not found" message
  *  2.  Known category → renders category name, description, product count
@@ -13,7 +15,8 @@
  * 11.  Authenticated user → cart icon navigates to /cart normally (no redirect)
  * 12.  Product cards link to the correct product page URL
  * 13.  Low-stock tag renders on cards with tag="Sale" etc.
- * 14.  Guest state → isGuest defaults to true before Supabase responds
+ * 14.  While auth is still loading, isGuest is false → cart click does NOT redirect
+ * 15.  Cart count reflects the sum of quantities returned by getCartCount()
  */
 
 import React from "react";
@@ -41,18 +44,25 @@ jest.mock("next/link", () => {
   return Link;
 });
 
-// Mock Navbar to control cart count and guest state in tests. By mocking Navbar, we can simulate different authentication states (guest vs signed-in) and cart counts without relying on a real backend or session. This allows us to test how CategoryPage behaves in response to user interactions with the cart icon, such as ensuring it redirects guests to login and allows signed-in users to navigate to the cart normally.
+// Mock Navbar to control cart count and guest state in tests. The real Navbar
+// receives `user`, `cartCount`, `onCartClick`, `showCart`, and `showNavLinks`
+// (there is no `isGuest` prop) — we derive `isGuest` from `user` here purely
+// for test assertions. By mocking Navbar, we can simulate different
+// authentication states (guest vs signed-in) and cart counts without relying
+// on a real backend or session, and test how CategoryPage responds to clicks
+// on the cart icon (redirecting guests to login, letting signed-in users
+// through normally).
 jest.mock("@/components/navbar", () => {
   const Navbar = ({
-    isGuest,
+    user,
     cartCount,
     onCartClick,
   }: {
-    isGuest: boolean;
+    user: { id: string } | null;
     cartCount: number;
     onCartClick: (e: React.MouseEvent) => void;
   }) => (
-    <nav data-testid="navbar" data-is-guest={String(isGuest)} data-cart-count={cartCount}>
+    <nav data-testid="navbar" data-is-guest={String(!user)} data-cart-count={cartCount}>
       <a
         href="/cart"
         data-testid="cart-link"
@@ -66,14 +76,32 @@ jest.mock("@/components/navbar", () => {
   return Navbar;
 });
 
-// Mocks for Supabase client and auth. By mocking the Supabase client and its auth.getUser method, we can control the authentication state in our tests without relying on a real backend or session. This allows us to simulate both authenticated and unauthenticated scenarios, which is crucial for testing the redirect behavior for guests and the normal rendering for signed-in users in isolation.
-const mockGetUser = jest.fn();
-const mockSupabaseFrom = jest.fn();
+// Mock the auth hook the component actually uses. CategoryPage reads
+// `{ user, loading }` from `useCurrentUser()` and derives
+// `isGuest = !loading && !user` — it does NOT call supabase.auth.getUser()
+// directly, so that's what we control here.
+const mockUseCurrentUser = jest.fn();
+jest.mock("@/lib/hooks/currentUser", () => ({
+  useCurrentUser: () => mockUseCurrentUser(),
+}));
 
+// Mock cartActions. CategoryPage calls `getCartCount()` (not a raw Supabase
+// query) to populate the cart badge, and imports `addToCart` for later use
+// on the page (unused directly by these tests, but must exist as an export).
+const mockGetCartCount = jest.fn();
+const mockAddToCart = jest.fn();
+jest.mock("@/lib/cartActions", () => ({
+  getCartCount: () => mockGetCartCount(),
+  addToCart: (...args: unknown[]) => mockAddToCart(...args),
+}));
+
+// The component still calls `createClient()` from `@/lib/supabase/client`
+// (even though this test suite doesn't exercise it further), so it needs a
+// harmless mock to avoid touching a real Supabase client.
 jest.mock("@/lib/supabase/client", () => ({
   createClient: jest.fn(() => ({
-    auth: { getUser: mockGetUser },
-    from: mockSupabaseFrom,
+    auth: { getUser: jest.fn() },
+    from: jest.fn(),
   })),
 }));
 
@@ -104,21 +132,32 @@ import { useParams } from "next/navigation";
 import CategoryPage from "@/app/category/[id]/page";
 
 
-// Helper functions to set up different authentication states in tests. By defining helper functions like setupGuestAuth and setupUserAuth, we can easily configure the mockGetUser function to simulate different authentication scenarios (guest vs signed-in) in our tests. This promotes code reuse and keeps our test cases focused on their specific assertions rather than the mechanics of setting up the auth state.
+// Helper functions to set up different authentication states in tests. By
+// defining helper functions like setupGuestAuth and setupUserAuth, we can
+// easily configure mockUseCurrentUser / mockGetCartCount to simulate
+// different scenarios (guest vs signed-in, with/without cart items) in our
+// tests. This promotes code reuse and keeps our test cases focused on their
+// specific assertions rather than the mechanics of setting up auth state.
 function setupGuestAuth() {
-  mockGetUser.mockResolvedValue({ data: { user: null } });
+  mockUseCurrentUser.mockReturnValue({ user: null, loading: false });
+  mockGetCartCount.mockResolvedValue(0);
 }
 
-// Set up authenticated user with optional cart quantities for testing cart count in Navbar. By allowing setupUserAuth to accept an array of cart quantities, we can simulate different cart states for the authenticated user, which is useful for testing how the Navbar displays the cart count and how the CategoryPage behaves in response to it.
+function setupLoadingAuth() {
+  mockUseCurrentUser.mockReturnValue({ user: null, loading: true });
+  mockGetCartCount.mockResolvedValue(0);
+}
+
+// Set up authenticated user with optional cart quantities for testing cart
+// count in Navbar. getCartCount() is expected to resolve with the total
+// quantity across cart rows, so we sum cartQuantities here the same way the
+// real cartActions implementation would.
 function setupUserAuth(cartQuantities: number[] = []) {
-  mockGetUser.mockResolvedValue({ data: { user: { id: "user-1" } } });
-  const single = jest.fn();
-  const eq = jest.fn().mockReturnValue({ data: cartQuantities.map((q) => ({ quantity: q })) });
-  const select = jest.fn().mockReturnValue({ eq });
-  mockSupabaseFrom.mockReturnValue({ select });
+  mockUseCurrentUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+  const total = cartQuantities.reduce((sum, q) => sum + q, 0);
+  mockGetCartCount.mockResolvedValue(total);
 }
 
-// Mock next/link to render a simple anchor tag. By mocking next/link, we can ensure that our tests render a consistent and simplified version of the Link component, which allows us to focus on testing the behavior of our CategoryPage without worrying about the complexities of Next.js's Link component. This also allows us to assert on the href attributes of links in our tests.
 beforeEach(() => {
   jest.clearAllMocks();
   (useParams as jest.Mock).mockReturnValue({ id: "women" });
@@ -126,12 +165,12 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
-  // Flush any pending async state updates (e.g. getUser resolution)
+  // Flush any pending async state updates (e.g. getCartCount resolution)
   // to prevent "not wrapped in act(...)" warnings leaking between tests.
   await act(async () => { await Promise.resolve(); });
 });
 
-// Unknown category 
+// Unknown category
 test("shows Category not found for unknown category id", () => {
   (useParams as jest.Mock).mockReturnValue({ id: "nonexistent" });
 
@@ -139,7 +178,7 @@ test("shows Category not found for unknown category id", () => {
   expect(screen.getByText("Category not found")).toBeInTheDocument();
 });
 
-// Known category renders metadata 
+// Known category renders metadata
 test("renders category name, description, and product count", async () => {
   render(<CategoryPage />);
 
@@ -149,7 +188,7 @@ test("renders category name, description, and product count", async () => {
   expect(screen.getByText(/3 products/i)).toBeInTheDocument();
 });
 
-// Search filters products 
+// Search filters products
 test("search input filters products by name", () => {
   render(<CategoryPage />);
 
@@ -162,7 +201,7 @@ test("search input filters products by name", () => {
   expect(screen.queryByText("Green Jacket")).not.toBeInTheDocument();
 });
 
-// No results 
+// No results
 test("shows no results message when search matches nothing", () => {
   render(<CategoryPage />);
 
@@ -173,7 +212,13 @@ test("shows no results message when search matches nothing", () => {
   expect(screen.getByText(/no results/i)).toBeInTheDocument();
 });
 
-// Helper function to extract product names in the order they appear on the page. This function looks for all link elements that point to product pages, extracts their text content, and matches it against our known product names to return an array of product names in the order they are rendered. This is useful for testing the sorting functionality of the CategoryPage, as we can assert that the products are displayed in the correct order based on the selected sort option.
+// Helper function to extract product names in the order they appear on the
+// page. This function looks for all link elements that point to product
+// pages, extracts their text content, and matches it against our known
+// product names to return an array of product names in the order they are
+// rendered. This is useful for testing the sorting functionality of the
+// CategoryPage, as we can assert that the products are displayed in the
+// correct order based on the selected sort option.
 const PRODUCT_NAMES = ["Red Blouse", "Blue Skirt", "Green Jacket"];
 
 // We filter links to only those that point to product pages (href starts with "/product
@@ -188,7 +233,7 @@ function getSortedProductNames() {
     .filter(Boolean) as string[];
 }
 
-//  Sort: Price Low to High 
+// Sort: Price Low to High
 test("sorts products by price ascending", async () => {
   render(<CategoryPage />);
   fireEvent.click(screen.getByText("Price: Low to High"));
@@ -196,7 +241,7 @@ test("sorts products by price ascending", async () => {
   expect(getSortedProductNames()).toEqual(["Blue Skirt", "Red Blouse", "Green Jacket"]);
 });
 
-// Sort: Price High to Low 
+// Sort: Price High to Low
 test("sorts products by price descending", async () => {
   render(<CategoryPage />);
   fireEvent.click(screen.getByText("Price: High to Low"));
@@ -204,7 +249,7 @@ test("sorts products by price descending", async () => {
   expect(getSortedProductNames()).toEqual(["Green Jacket", "Red Blouse", "Blue Skirt"]);
 });
 
-//  Sort: Best Rated 
+// Sort: Best Rated
 test("sorts products by rating descending", async () => {
   render(<CategoryPage />);
   fireEvent.click(screen.getByText("Best Rated"));
@@ -212,7 +257,7 @@ test("sorts products by rating descending", async () => {
   expect(getSortedProductNames()).toEqual(["Blue Skirt", "Red Blouse", "Green Jacket"]);
 });
 
-// Active sort button styling 
+// Active sort button styling
 test("active sort button has bg-zinc-900 class", () => {
   render(<CategoryPage />);
 
@@ -225,7 +270,7 @@ test("active sort button has bg-zinc-900 class", () => {
   expect(featuredBtn).not.toHaveClass("bg-zinc-900");
 });
 
-// Back to Home button 
+// Back to Home button
 test("Back to Home button calls router.push('/')", () => {
   render(<CategoryPage />);
 
@@ -233,11 +278,10 @@ test("Back to Home button calls router.push('/')", () => {
   expect(mockPush).toHaveBeenCalledWith("/");
 });
 
-//  Guest cart click → redirect 
+// Guest cart click → redirect
 test("cart click redirects guest to /login?next=/cart", async () => {
   render(<CategoryPage />);
 
-  // Wait for auth to resolve (isGuest remains true for null user)
   await waitFor(() =>
     expect(screen.getByTestId("navbar")).toHaveAttribute("data-is-guest", "true")
   );
@@ -249,7 +293,7 @@ test("cart click redirects guest to /login?next=/cart", async () => {
   expect(mockPush).toHaveBeenCalledWith("/login?next=/cart");
 });
 
-// Authenticated cart click does NOT redirect 
+// Authenticated cart click does NOT redirect
 test("authenticated cart click does not call router.push", async () => {
   setupUserAuth([2, 3]);
 
@@ -259,11 +303,28 @@ test("authenticated cart click does not call router.push", async () => {
     expect(screen.getByTestId("navbar")).toHaveAttribute("data-is-guest", "false")
   );
 
+  const cartLink = screen.getByTestId("cart-link");
+  fireEvent.click(cartLink);
+
   // No push for authenticated user
   expect(mockPush).not.toHaveBeenCalled();
 });
 
-// Product card links 
+// While auth is still resolving, isGuest is false (not yet determined) so a
+// cart click should NOT redirect — only once loading finishes with no user
+// does the guest redirect kick in.
+test("cart click does not redirect while auth is still loading", async () => {
+  setupLoadingAuth();
+
+  render(<CategoryPage />);
+
+  const cartLink = screen.getByTestId("cart-link");
+  fireEvent.click(cartLink);
+
+  expect(mockPush).not.toHaveBeenCalled();
+});
+
+// Product card links
 test("product card links point to /product/:categoryId/:productId", () => {
   render(<CategoryPage />);
 
@@ -274,7 +335,7 @@ test("product card links point to /product/:categoryId/:productId", () => {
   expect(blouseLink).toHaveAttribute("href", "/product/women/p1");
 });
 
-// Tag badge renders 
+// Tag badge renders
 test("renders product tag badge when product has a tag", () => {
   render(<CategoryPage />);
 
@@ -282,7 +343,7 @@ test("renders product tag badge when product has a tag", () => {
   expect(screen.getByText("New")).toBeInTheDocument();
 });
 
-// Cart count from Supabase 
+// Cart count from getCartCount()
 test("displays correct cart count after auth resolves", async () => {
   setupUserAuth([2, 3]); // total = 5
 
@@ -291,4 +352,5 @@ test("displays correct cart count after auth resolves", async () => {
   await waitFor(() =>
     expect(screen.getByTestId("navbar")).toHaveAttribute("data-cart-count", "5")
   );
+  expect(mockGetCartCount).toHaveBeenCalledTimes(1);
 });
